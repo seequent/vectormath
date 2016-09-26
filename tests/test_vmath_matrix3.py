@@ -4,7 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import unittest
-from properties.vmath import Vector, Matrix3
+from vectormath import Vector, Matrix3
 import numpy as np
 
 
