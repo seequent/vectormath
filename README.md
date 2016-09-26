@@ -1,5 +1,10 @@
-vectormath
-**********
+# vectormath
+
+
+[![Latest PyPI version](https://img.shields.io/pypi/v/vectormath.svg)](https://pypi.python.org/pypi/vectormath)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/3ptscience/vectormath/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/3ptscience/vectormath.svg?branch=master)](https://travis-ci.org/3ptscience/vectormath)
+
 
 Vector math utilities for Python.
 
