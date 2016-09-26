@@ -7,8 +7,8 @@ from builtins import super
 from builtins import map
 import numpy as np
 
-from .vector import Vector3
 from .plane import Plane
+
 
 class Parallelogram(Plane):
 
@@ -66,9 +66,12 @@ class Parallelogram(Plane):
         v2 = (b-pt).cross(c-pt)
         v3 = (c-pt).cross(a-pt)
 
-
         # is in Triangle abc?
-        if np.all(v1.dot(v2) >= 0) and np.all(v2.dot(v3) >= 0) and np.all(v3.dot(v1) >= 0):
+        if (
+                np.all(v1.dot(v2) >= 0) and
+                np.all(v2.dot(v3) >= 0) and
+                np.all(v3.dot(v1) >= 0)
+           ):
             return True
         # else, is in Triangle dbc?
         else:
@@ -103,11 +106,9 @@ class Parallelogram(Plane):
 
         return ret
 
-
     def __next__(self):
         if self._current > 2:
             raise StopIteration
         else:
             self._current += 1
-            return [self.O,self.U,self.V][self._current-1]
-
+            return [self.O, self.U, self.V][self._current-1]

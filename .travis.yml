@@ -19,6 +19,15 @@ install:
 script:
   - nosetests
 
+after_success:
+  - openssl aes-256-cbc -K $encrypted_17facfdb893b_key -iv $encrypted_17facfdb893b_iv -in .pypirc.enc -out ~/.pypirc -d
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" -a $TRAVIS_PYTHON_VERSION == "2.7" -a -n "$(grep version setup.py | cut -d \' -f 2 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$')" ]; then
+      make publish;
+    fi
+  - if [ "$TRAVIS_BRANCH" = "beta" -a "$TRAVIS_PULL_REQUEST" = "false" -a $TRAVIS_PYTHON_VERSION == "2.7" -a -n "$(grep version setup.py | cut -d \' -f 2 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+b[0-9]+$')" ]; then
+      make publish;
+    fi
+
 notifications:
- slack: 3point:n4uGopqXrpbYFbslpV5z0tyO
- email: false
+  slack: 3point:n4uGopqXrpbYFbslpV5z0tyO
+  email: false
