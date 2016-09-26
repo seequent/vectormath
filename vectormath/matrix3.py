@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 
-from . import Vector
+from .vector import Vector3
 
 
 class Matrix3(np.ndarray):
@@ -38,7 +38,7 @@ class Matrix3(np.ndarray):
             c = np.cos(theta)
             s = np.sin(theta)
 
-            if isinstance(axis, Vector):
+            if isinstance(axis, Vector3):
                 t = 1 - c
                 x = axis.x
                 y = axis.y
@@ -52,7 +52,7 @@ class Matrix3(np.ndarray):
             else:
                 if axis not in ['X', 'Y', 'Z']:
                     raise TypeError(
-                        "Axis must be either a Vector or 'X', 'Y', or 'Z'"
+                        "Axis must be either a Vector3 or 'X', 'Y', or 'Z'"
                     )
 
                 if axis == 'X':
@@ -80,8 +80,8 @@ class Matrix3(np.ndarray):
             return
 
     def __mul__(self, v):
-        if isinstance(v, Vector):
-            return Vector(self.dot(v.T).T)
+        if isinstance(v, Vector3):
+            return Vector3(self.dot(v.T).T)
         elif isinstance(v, Matrix3):
             return Matrix3(self.dot(v))
         return Matrix3(self.view(np.ndarray) * v)

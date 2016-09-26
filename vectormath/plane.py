@@ -4,8 +4,8 @@ standard_library.install_aliases()
 from builtins import object
 
 import numpy as np
-from . import Vector, Matrix3
-from .. import exceptions
+from .vector import Vector3
+from .matrix3 import Matrix3
 import warnings
 
 class Plane(object):
@@ -27,9 +27,9 @@ class Plane(object):
 
         """
         if len(args) == 1:
-            self._fromNormalAndPoint(args[0],Vector())
+            self._fromNormalAndPoint(args[0],Vector3())
         elif len(args) == 2 and np.isscalar(args[0]):
-            self._fromStrikeAndDip(args[0],args[1],Vector())
+            self._fromStrikeAndDip(args[0],args[1],Vector3())
         elif len(args) == 2:
             self._fromNormalAndPoint(args[0],args[1])
         elif len(args) == 3 and np.isscalar(args[0]):
@@ -63,7 +63,7 @@ class Plane(object):
     def D(self): return self.centroid.dot(self.normal)
 
     def _from3Points(self, a, b, c):
-        a, b, c = Vector(a), Vector(b), Vector(c)
+        a, b, c = Vector3(a), Vector3(b), Vector3(c)
         if a.nV > 1 or b.nV > 1 or c.nV > 1:
             raise ValueError('Arguments must be single points')
         if np.array_equal(a, b) or np.array_equal(a, c) or np.array_equal(b, c):
@@ -79,12 +79,12 @@ class Plane(object):
             raise ValueError('Strike must be value between 0 and 360: %4.2f'%s)
         if not (0 <= d <= 90):
             raise ValueError('Dip must be value between 0 and 90: %4.2f'%s)
-        N = Matrix3(-s,'Z')*(Matrix3(d,'Y')*Vector(0,0,1))
+        N = Matrix3(-s,'Z')*(Matrix3(d,'Y')*Vector3(0,0,1))
         self._fromNormalAndPoint(N, pt)
 
     def _fromNormalAndPoint(self, N, pt):
-        N = Vector(N)
-        pt = Vector(pt)
+        N = Vector3(N)
+        pt = Vector3(pt)
         if N.nV > 1 or pt.nV > 1:
             raise ValueError('Must only provide one vector for normal and point')
         if N.length == 0:

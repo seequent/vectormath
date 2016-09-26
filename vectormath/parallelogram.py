@@ -7,7 +7,8 @@ from builtins import super
 from builtins import map
 import numpy as np
 
-from . import Vector, Plane
+from .vector import Vector3
+from .plane import Plane
 
 class Parallelogram(Plane):
 

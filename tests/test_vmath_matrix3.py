@@ -4,7 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import unittest
-from properties.vmath import Vector, Matrix3
+from vectormath import Vector3, Matrix3
 import numpy as np
 
 
@@ -30,15 +30,15 @@ class TestVMathMatrix(unittest.TestCase):
         M3 = Matrix3(M2)
         self.assertTrue(M2 is not M3)
         self.assertTrue(np.array_equal(M2, M3))
-        v1 = Vector(1, 0, 0)
+        v1 = Vector3(1, 0, 0)
         M4 = Matrix3(45, 'X')
         M5 = Matrix3(45, v1)
         self.assertTrue(np.array_equal(M4, M5))
-        v2 = Vector(0, 1, 0)
+        v2 = Vector3(0, 1, 0)
         M6 = Matrix3(30, 'Y')
         M7 = Matrix3(30, v2)
         self.assertTrue(np.array_equal(M6, M7))
-        v3 = Vector(0, 0, 1)
+        v3 = Vector3(0, 0, 1)
         M8 = Matrix3(90, 'Z')
         M9 = Matrix3(90, v3)
         self.assertTrue(np.array_equal(M8, M9))
@@ -56,14 +56,14 @@ class TestVMathMatrix(unittest.TestCase):
         self.assertTrue(np.array_equal(M2, M3))
         M4 = 3 * M1
         self.assertTrue(np.array_equal(M4, M3))
-        v1 = Vector()
+        v1 = Vector3()
         v2 = M1 * v1
         self.assertTrue(np.array_equal(v1, v2))
-        v2 = Vector([[1, 2, 3], [-10, -20, 30]])
+        v2 = Vector3([[1, 2, 3], [-10, -20, 30]])
         M5 = Matrix3([[.5, 1, 1.5],
                       [-.5, 0, 0],
                       [1, 10, 100]])
-        v3 = Vector([[7, -.5, 321], [20, 5, 2790]])
+        v3 = Vector3([[7, -.5, 321], [20, 5, 2790]])
         self.assertTrue(np.array_equal(M5*v2, v3))
         self.assertTrue(np.array_equal(M1, M1*M1))
         M6 = Matrix3([[0, 2, 4],
@@ -75,7 +75,7 @@ class TestVMathMatrix(unittest.TestCase):
         self.assertTrue(np.array_equal(M7, M5*M6))
 
     def test_rotation(self):
-        v = Vector(1, 0, 0)
+        v = Vector3(1, 0, 0)
         M1 = Matrix3(+90, 'Z')
         M2 = Matrix3(-90, 'Z')
         self.assertAlmostEqual((M1 * v).x, 0)
