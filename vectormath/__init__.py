@@ -1,4 +1,4 @@
-from .vector import Vector3
+from .vector import Vector3, Vector2
 from .matrix3 import Matrix3
 from .parallelogram import Parallelogram
 from .plane import Plane
