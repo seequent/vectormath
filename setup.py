@@ -24,7 +24,7 @@ with open('README.rst') as f:
 
 setup(
     name='vectormath',
-    version='0.0.2',
+    version='0.0.3',
     packages=find_packages(),
     install_requires=[
         'future',

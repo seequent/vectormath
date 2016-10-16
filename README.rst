@@ -42,4 +42,4 @@ Vector math utilities for Python.
 Major classes include :code:`Vector3`, :code:`Matrix3`, :code:`Plane`, :code:`Parallelogram`.
 
 
-Current version: v0.0.2
+Current version: v0.0.3
