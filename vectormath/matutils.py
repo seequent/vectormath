@@ -8,33 +8,40 @@ import numpy as np
 
 
 def mkvc(v):
+    """Make vector (Fortran ordering)"""
     return v.flatten(order='F')
 
 
 def ndgrid(*args, **kwargs):
-    """
-    Form tensorial grid for 1, 2, or 3 dimensions.
+    """Form tensorial grid for 1, 2, or 3 dimensions.
     Returns as column vectors by default.
-    To return as matrix input:
+    To return as matrix input::
+
         ndgrid(..., vector=False)
+
     The inputs can be a list or separate arguments.
-    e.g.::
+
+    .. code::
+
         a = np.array([1, 2, 3])
         b = np.array([1, 2])
         XY = ndgrid(a, b)
-            > [[1 1]
-               [2 1]
-               [3 1]
-               [1 2]
-               [2 2]
-               [3 2]]
+
+        > [[1 1]
+           [2 1]
+           [3 1]
+           [1 2]
+           [2 2]
+           [3 2]]
+
         X, Y = ndgrid(a, b, vector=False)
-            > X = [[1 1]
-                   [2 2]
-                   [3 3]]
-            > Y = [[1 2]
-                   [1 2]
-                   [1 2]]
+
+        > X = [[1 1]
+               [2 2]
+               [3 3]]
+        > Y = [[1 2]
+               [1 2]
+               [1 2]]
     """
 
     # Read the keyword arguments, and only accept a vector=True/False
@@ -79,6 +86,7 @@ def ndgrid(*args, **kwargs):
 
 
 def ouv2vec(O, U, V, n):
+    """A grid in the parallelogram defined by the OUV vectors."""
     aspect = U.length / V.length
 
     if type(n) in [list, tuple]:
