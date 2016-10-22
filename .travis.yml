@@ -13,7 +13,7 @@ addons:
       - python-numpy
 
 install:
-  - pip install nose-cov python-coveralls sphinx
+  - pip install nose-cov python-coveralls sphinx sphinxcontrib-pyexec
   - pip install -r requirements.txt
 
 script:
