@@ -303,12 +303,12 @@ intersphinx_mapping = {'https://docs.python.org/3/': None,
                        'https://docs.scipy.org/doc/numpy/': None,
                        'https://docs.scipy.org/doc/scipy/reference/': None,}
 
-
 import sphinx.environment
 from docutils.utils import get_source_line
 
+
 def _supress_nonlocal_image_warn(self, msg, node, **kwargs):
     if not msg.startswith('nonlocal image URI found:'):
-        self._warnfunc(msg, '%s:%s' % get_source_line(node), **kwargs)
+        self._warnfunc(msg, '{:s}:{:s}'.format(get_source_line(node), **kwargs))
 
 sphinx.environment.BuildEnvironment.warn_node = _supress_nonlocal_image_warn
