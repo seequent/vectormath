@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 from .vector import Vector3
-from .matrix3 import Matrix3
+from .matrix import Matrix3
 
 
 class Plane(object):
