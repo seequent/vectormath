@@ -7,6 +7,217 @@ import numpy as np
 
 
 class Vector3(np.ndarray):
+    """Primitive 3D vector defined from the origin"""
+
+    def __new__(cls, x=None, y=None, z=None):
+
+        def read_array(X, Y, Z):
+            if isinstance(X, cls) and Y is None and Z is None:
+                return cls(X.x, X.y, X.z)
+            if (isinstance(X, (list, tuple, np.ndarray)) and len(X) == 3 and
+                    Y is None and Z is None):
+                return cls(X[0], X[1], X[2])
+            if X is None and Y is None and Z is None:
+                return cls(0, 0, 0)
+            if np.isscalar(X) and np.isscalar(Y) and np.isscalar(Z):
+                xyz = np.r_[X, Y, Z]
+                xyz = xyz.astype(float)
+                return xyz.view(cls)
+            raise ValueError('Invalid input for Vector3 - must be an instance '
+                             'of a Vector3, a length-3 array, 3 scalars, or '
+                             'nothing for [0., 0., 0.]')
+
+        return read_array(x, y, z)
+
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+
+    @property
+    def x(self):
+        return self[0]
+
+    @x.setter
+    def x(self, value):
+        self[0] = value
+
+    @property
+    def y(self):
+        return self[1]
+
+    @y.setter
+    def y(self, value):
+        self[1] = value
+
+    @property
+    def z(self):
+        return self[2]
+
+    @z.setter
+    def z(self, value):
+        self[2] = value
+
+    @property
+    def length(self):
+        """Vector3 length"""
+        return float(np.sqrt(np.sum(self**2)))
+
+    @length.setter
+    def length(self, l):
+        if not np.isscalar(l):
+            raise ValueError('Length must be a scalar')
+        l = float(l)
+        if self.length != 0:
+            new_length = l/self.length
+            self.x *= new_length
+            self.y *= new_length
+            self.z *= new_length
+            return
+        if l != 0:
+            raise ZeroDivisionError('Cannot resize vector of length 0 to '
+                                    'nonzero length')
+
+    def as_length(self, l):
+        """Scale the length of a vector to a value"""
+        V = self.copy()
+        V.length = l
+        return V
+
+    def as_percent(self, p):
+        """Scale the length of a vector by a percent"""
+        V = self.copy()
+        V.length = p * self.length
+        return V
+
+    def as_unit(self):
+        """Scale the length of a vector to 1"""
+        V = self.copy()
+        V.normalize()
+        return V
+
+    def normalize(self):
+        """Scale the length of a vector to 1 in place"""
+        self.length = 1
+        return self
+
+    def dot(self, vec):
+        """Dot product with another vector"""
+        if not isinstance(vec, Vector3):
+            raise TypeError('Dot product operand must be a vector')
+        return float(self.x*vec.x + self.y*vec.y + self.z*vec.z)
+
+    def cross(self, vec):
+        """Cross product with another vector"""
+        if not isinstance(vec, Vector3):
+            raise TypeError('Cross product operand must be a vector')
+        return Vector3(np.cross(self, vec))
+
+    def __mul__(self, m):
+        return Vector3(self.view(np.ndarray) * m)
+
+
+class Vector2(np.ndarray):
+    """Primitive 2D vector defined from the origin"""
+
+    def __new__(cls, x=None, y=None):
+
+        def read_array(X, Y):
+            if isinstance(X, cls) and Y is None:
+                return cls(X.x, X.y)
+            if (isinstance(X, (list, tuple, np.ndarray)) and len(X) == 2 and
+                    Y is None):
+                return cls(X[0], X[1])
+            if X is None and Y is None:
+                return cls(0, 0)
+            if np.isscalar(X) and np.isscalar(Y):
+                xyz = np.r_[X, Y]
+                xyz = xyz.astype(float)
+                return xyz.view(cls)
+            raise ValueError('Invalid input for Vector2 - must be an instance '
+                             'of a Vector2, a length-2 array, 2 scalars, or '
+                             'nothing for [0., 0.]')
+
+        return read_array(x, y)
+
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+
+    @property
+    def x(self):
+        return self[0]
+
+    @x.setter
+    def x(self, value):
+        self[0] = value
+
+    @property
+    def y(self):
+        return self[1]
+
+    @y.setter
+    def y(self, value):
+        self[1] = value
+
+    @property
+    def length(self):
+        """Vector3 length"""
+        return float(np.sqrt(np.sum(self**2)))
+
+    @length.setter
+    def length(self, l):
+        if not np.isscalar(l):
+            raise ValueError('Length must be a scalar')
+        l = float(l)
+        if self.length != 0:
+            new_length = l/self.length
+            self.x *= new_length
+            self.y *= new_length
+            return
+        if l != 0:
+            raise ZeroDivisionError('Cannot resize vector of length 0 to '
+                                    'nonzero length')
+
+    def as_length(self, l):
+        """Scale the length of a vector to a value"""
+        V = self.copy()
+        V.length = l
+        return V
+
+    def as_percent(self, p):
+        """Scale the length of a vector by a percent"""
+        V = self.copy()
+        V.length = p * self.length
+        return V
+
+    def as_unit(self):
+        """Scale the length of a vector to 1"""
+        V = self.copy()
+        V.normalize()
+        return V
+
+    def normalize(self):
+        """Scale the length of a vector to 1 in place"""
+        self.length = 1
+        return self
+
+    def dot(self, vec):
+        """Dot product with another vector"""
+        if not isinstance(vec, Vector2):
+            raise TypeError('Dot product operand must be a vector')
+        return float(self.x*vec.x + self.y*vec.y)
+
+    def cross(self, vec):
+        """Cross product with another vector"""
+        if not isinstance(vec, Vector2):
+            raise TypeError('Cross product operand must be a vector')
+        return Vector2(np.cross(self, vec))
+
+    def __mul__(self, m):
+        return Vector2(self.view(np.ndarray) * m)
+
+
+class Vector3Array(np.ndarray):
     """
         Primitive vectors, or list of primitive vectors,
         defined from the origin.
@@ -18,21 +229,19 @@ class Vector3(np.ndarray):
             if isinstance(X, cls) and Y is None and Z is None:
                 X = np.atleast_2d(X)
                 return cls(X.x.copy(), X.y.copy(), X.z.copy())
-
-            if isinstance(X, (list, tuple)) and X is not None:
+            if isinstance(X, (list, tuple)):
                 X = np.array(X)
-            if isinstance(Y, (list, tuple)) and Y is not None:
+            if isinstance(Y, (list, tuple)):
                 Y = np.array(Y)
-            if isinstance(Z, (list, tuple)) and Z is not None:
+            if isinstance(Z, (list, tuple)):
                 Z = np.array(Z)
-
             if isinstance(X, np.ndarray) and Y is None and Z is None:
                 X = np.squeeze(X)
                 if X.size == 3:
                     X = X.flatten()
-                    return Vector3(X[0], X[1], X[2])
+                    return cls(X[0], X[1], X[2])
                 elif len(X.shape) == 2 and X.shape[1] == 3:
-                    return Vector3(
+                    return cls(
                         X[:, 0].copy(), X[:, 1].copy(), X[:, 2].copy()
                     )
                 raise ValueError(
@@ -63,11 +272,20 @@ class Vector3(np.ndarray):
         if obj is None:
             return
 
+    def __getitem__(self, i):
+        item_out = super(Vector3Array, self).__getitem__(i)
+        if np.isscalar(i):
+            return item_out.view(Vector3)
+        if isinstance(i, slice):
+            return item_out
+        return item_out.view(np.ndarray)
+
+    def slice(self, *args, **kwargs):
+        print('slice')
+
     @property
     def x(self):
-        if self.nV == 1:
-            return self[0, 0]
-        return self[:, 0].view(np.ndarray)
+        return self[:, 0]
 
     @x.setter
     def x(self, value):
@@ -75,9 +293,7 @@ class Vector3(np.ndarray):
 
     @property
     def y(self):
-        if self.nV == 1:
-            return self[0, 1]
-        return self[:, 1].view(np.ndarray)
+        return self[:, 1]
 
     @y.setter
     def y(self, value):
@@ -85,9 +301,7 @@ class Vector3(np.ndarray):
 
     @property
     def z(self):
-        if self.nV == 1:
-            return self[0, 2]
-        return self[:, 2].view(np.ndarray)
+        return self[:, 2]
 
     @z.setter
     def z(self, value):
@@ -100,11 +314,8 @@ class Vector3(np.ndarray):
 
     @property
     def length(self):
-        """Vector3 length"""
-        l = np.sqrt(np.sum(self**2, axis=1))
-        if self.nV == 1:
-            return float(l)
-        return l.view(np.ndarray)
+        """Vector3 lengths"""
+        return np.sqrt(np.sum(self**2, axis=1)).view(np.ndarray)
 
     @length.setter
     def length(self, l):
@@ -138,10 +349,6 @@ class Vector3(np.ndarray):
         raise ZeroDivisionError('Cannot resize vector of length 0 to '
                                 'nonzero length')
 
-    def copy(self):
-        """Returns a new copy of the vector"""
-        return Vector3(self)
-
     def as_length(self, l):
         """Scale the length of a vector to a value"""
         V = self.copy()
@@ -167,30 +374,27 @@ class Vector3(np.ndarray):
 
     def dot(self, vec):
         """Dot product with another vector"""
-        if not isinstance(vec, Vector3):
+        if not isinstance(vec, Vector3Array):
             raise TypeError('Dot product operand must be a vector')
         if self.nV != 1 and vec.nV != 1 and self.nV != vec.nV:
             raise ValueError('Dot product operands must have the same '
                              'number of elements.')
-        D = self.x*vec.x + self.y*vec.y + self.z*vec.z
-        if np.isscalar(D):
-            return float(D)
-        return D.view(np.ndarray)
+        return self.x*vec.x + self.y*vec.y + self.z*vec.z
 
     def cross(self, vec):
         """Cross product with another vector"""
-        if not isinstance(vec, Vector3):
-            raise TypeError('Cross product operand must be a vector')
+        if not isinstance(vec, Vector3Array):
+            raise TypeError('Cross product operand must be a Vector3Array')
         if self.nV != 1 and vec.nV != 1 and self.nV != vec.nV:
             raise ValueError('Cross product operands must have the same '
                              'number of elements.')
-        return Vector3(np.cross(self, vec))
+        return Vector3Array(np.cross(self, vec))
 
     def __mul__(self, m):
-        return Vector3(self.view(np.ndarray) * m)
+        return Vector3Array(self.view(np.ndarray) * m)
 
 
-class Vector2(np.ndarray):
+class Vector2Array(np.ndarray):
     """
         Primitive vectors, or list of primitive vectors,
         defined from the origin.
@@ -202,19 +406,17 @@ class Vector2(np.ndarray):
             if isinstance(X, cls) and Y is None:
                 X = np.atleast_2d(X)
                 return cls(X.x.copy(), X.y.copy())
-
-            if isinstance(X, (list, tuple)) and X is not None:
+            if isinstance(X, (list, tuple)):
                 X = np.array(X)
-            if isinstance(Y, (list, tuple)) and Y is not None:
+            if isinstance(Y, (list, tuple)):
                 Y = np.array(Y)
-
             if isinstance(X, np.ndarray) and Y is None:
                 X = np.squeeze(X)
                 if X.size == 2:
                     X = X.flatten()
-                    return Vector2(X[0], X[1])
+                    return cls(X[0], X[1])
                 elif len(X.shape) == 2 and X.shape[1] == 2:
-                    return Vector2(
+                    return cls(
                         X[:, 0].copy(), X[:, 1].copy()
                     )
                 raise ValueError(
@@ -228,7 +430,7 @@ class Vector2(np.ndarray):
                 raise TypeError('Must be the same types for x and y '
                                 'for vector init')
             if isinstance(X, np.ndarray):
-                if not X.shape == Y.shape:
+                if X.shape != Y.shape:
                     raise ValueError('Must be the same shapes for x and y '
                                      'in vector init')
                 xy = np.c_[X, Y]
@@ -245,11 +447,17 @@ class Vector2(np.ndarray):
         if obj is None:
             return
 
+    def __getitem__(self, i):
+        item_out = super(Vector2Array, self).__getitem__(i)
+        if np.isscalar(i):
+            return item_out.view(Vector2)
+        if isinstance(i, slice):
+            return item_out
+        return item_out.view(np.ndarray)
+
     @property
     def x(self):
-        if self.nV == 1:
-            return self[0, 0]
-        return self[:, 0].view(np.ndarray)
+        return self[:, 0]
 
     @x.setter
     def x(self, value):
@@ -257,9 +465,7 @@ class Vector2(np.ndarray):
 
     @property
     def y(self):
-        if self.nV == 1:
-            return self[0, 1]
-        return self[:, 1].view(np.ndarray)
+        return self[:, 1]
 
     @y.setter
     def y(self, value):
@@ -277,10 +483,7 @@ class Vector2(np.ndarray):
     @property
     def length(self):
         """Vector3 length"""
-        l = np.sqrt(np.sum(self**2, axis=1))
-        if self.nV == 1:
-            return float(l)
-        return l.view(np.ndarray)
+        return np.sqrt(np.sum(self**2, axis=1)).view(np.ndarray)
 
     @length.setter
     def length(self, l):
@@ -312,10 +515,6 @@ class Vector2(np.ndarray):
         raise ZeroDivisionError('Cannot resize vector of length 0 to '
                                 'nonzero length')
 
-    def copy(self):
-        """Returns a new copy of the vector"""
-        return Vector2(self)
-
     def as_length(self, l):
         """Scale the length of a vector to a value"""
         V = self.copy()
@@ -341,15 +540,12 @@ class Vector2(np.ndarray):
 
     def dot(self, vec):
         """Dot product with another vector"""
-        if not isinstance(vec, Vector2):
-            raise TypeError('Dot product operand must be a vector2')
+        if not isinstance(vec, Vector2Array):
+            raise TypeError('Dot product operand must be a Vector2Array')
         if self.nV != 1 and vec.nV != 1 and self.nV != vec.nV:
             raise ValueError('Dot product operands must have the same '
                              'number of elements.')
-        D = self.x*vec.x + self.y*vec.y
-        if np.isscalar(D):
-            return float(D)
-        return D.view(np.ndarray)
+        return self.x*vec.x + self.y*vec.y
 
     def __mul__(self, m):
-        return Vector2(self.view(np.ndarray) * m)
+        return Vector2Array(self.view(np.ndarray) * m)
