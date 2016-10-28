@@ -99,7 +99,7 @@ def ouv2vec(O, U, V, n):
     X = O.x + U.x * square[:, 0] + V.x * square[:, 1]
     Y = O.y + U.y * square[:, 0] + V.y * square[:, 1]
     Z = O.z + U.z * square[:, 0] + V.z * square[:, 1]
-    vec = vector.Vector3(X, Y, Z)
+    vec = vector.Vector3Array(X, Y, Z)
     return vec, (nx, ny)
 
 
@@ -107,9 +107,9 @@ def switchOUVZ(OUVZ1, OUVZ2, v):
     """Switches a vector from one OUVZ space to another."""
     O1, U1, V1, Z1 = OUVZ1
     O2, U2, V2, Z2 = OUVZ2
-    opu = (v - O1).dot(Vector3(U1).normalize()) / U1.length
-    opv = (v - O1).dot(Vector3(V1).normalize()) / V1.length
-    opz = (v - O1).dot(Vector3(Z1).normalize()) / Z1.length
+    opu = (v - O1).dot(vector.Vector3Array(U1).normalize()) / U1.length
+    opv = (v - O1).dot(vector.Vector3Array(V1).normalize()) / V1.length
+    opz = (v - O1).dot(vector.Vector3Array(Z1).normalize()) / Z1.length
     return O2 + U2.asPercent(opu) + V2.asPercent(opv) + Z2.asPercent(opz)
 
 

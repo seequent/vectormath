@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 
-from .vector import Vector3
+from .vector import Vector3, Vector3Array
 
 
 class Matrix3(np.ndarray):
@@ -80,8 +80,8 @@ class Matrix3(np.ndarray):
             return
 
     def __mul__(self, v):
-        if isinstance(v, Vector3):
-            return Vector3(self.dot(v.T).T)
+        if isinstance(v, Vector3Array):
+            return Vector3Array(self.dot(v.T).T)
         elif isinstance(v, Matrix3):
             return Matrix3(self.dot(v))
         return Matrix3(self.view(np.ndarray) * v)

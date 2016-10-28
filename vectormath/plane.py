@@ -4,7 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import numpy as np
-from .vector import Vector3
+from .vector import Vector3Array
 from .matrix import Matrix3
 
 
@@ -27,9 +27,9 @@ class Plane(object):
 
         """
         if len(args) == 1:
-            self._fromNormalAndPoint(args[0], Vector3())
+            self._fromNormalAndPoint(args[0], Vector3Array())
         elif len(args) == 2 and np.isscalar(args[0]):
-            self._fromStrikeAndDip(args[0], args[1], Vector3())
+            self._fromStrikeAndDip(args[0], args[1], Vector3Array())
         elif len(args) == 2:
             self._fromNormalAndPoint(args[0], args[1])
         elif len(args) == 3 and np.isscalar(args[0]):
@@ -77,7 +77,7 @@ class Plane(object):
         return self.centroid.dot(self.normal)
 
     def _from3Points(self, a, b, c):
-        a, b, c = Vector3(a), Vector3(b), Vector3(c)
+        a, b, c = Vector3Array(a), Vector3Array(b), Vector3Array(c)
         if a.nV > 1 or b.nV > 1 or c.nV > 1:
             raise ValueError('Arguments must be single points')
         if (
@@ -101,12 +101,12 @@ class Plane(object):
             raise ValueError(
                 'Dip must be value between 0 and 90: {:4.2f}'.format(s)
             )
-        N = Matrix3(-s, 'Z')*(Matrix3(d, 'Y')*Vector3(0, 0, 1))
+        N = Matrix3(-s, 'Z')*(Matrix3(d, 'Y')*Vector3Array(0, 0, 1))
         self._fromNormalAndPoint(N, pt)
 
     def _fromNormalAndPoint(self, N, pt):
-        N = Vector3(N)
-        pt = Vector3(pt)
+        N = Vector3Array(N)
+        pt = Vector3Array(pt)
         if N.nV > 1 or pt.nV > 1:
             raise ValueError(
                 'Must only provide one vector for normal and point'
