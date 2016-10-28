@@ -280,9 +280,6 @@ class Vector3Array(np.ndarray):
             return item_out
         return item_out.view(np.ndarray)
 
-    def slice(self, *args, **kwargs):
-        print('slice')
-
     @property
     def x(self):
         return self[:, 0]
