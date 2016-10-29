@@ -9,15 +9,11 @@ import numpy as np
 class Vector(np.ndarray):
 
     def __new__(cls, *args, **kwargs):
-
-        try:
-            return Vector3(*args, **kwargs)
-        except:
-            pass
-        try:
-            return Vector2(*args, **kwargs)
-        except:
-            pass
+        for vcls in (Vector3, Vector2):
+            try:
+                return vcls(*args, **kwargs)
+            except:
+                pass
         raise NotImplementedError('Please use Vector2 or Vector3 classes')
 
     def __array_finalize__(self, obj):
@@ -97,7 +93,6 @@ class Vector(np.ndarray):
         return self.__class__(self.view(np.ndarray) * m)
 
 
-
 class Vector3(Vector):
     """Primitive 3D vector defined from the origin"""
 
@@ -157,20 +152,12 @@ class Vector2(Vector):
 class VectorArray(Vector):
 
     def __new__(cls, *args, **kwargs):
-
-        try:
-            return Vector3Array(*args, **kwargs)
-        except:
-            pass
-        try:
-            return Vector2Array(*args, **kwargs)
-        except:
-            pass
+        for vcls in (Vector3Array, Vector2Array):
+            try:
+                return vcls(*args, **kwargs)
+            except:
+                pass
         raise NotImplementedError('Please use Vector2Array or Vector3Array')
-
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
 
     @property
     def x(self):
@@ -198,11 +185,57 @@ class VectorArray(Vector):
         self.length = np.ones(self.nV)
         return self
 
+    @property
+    def dims(self):
+        raise NotImplementedError('VectorArray does not have specified dims')
+
+    @property
+    def length(self):
+        """Vector3 lengths"""
+        return np.sqrt(np.sum(self**2, axis=1)).view(np.ndarray)
+
+    @length.setter
+    def length(self, l):
+        l = np.array(l)
+        if self.nV != l.size:
+            raise ValueError('Length vector must be the same number of '
+                             'elements as vector.')
+        # This case resizes all vectors with nonzero length
+        if np.all(self.length != 0):
+            new_length = l/self.length
+            for dim in self.dims:
+                setattr(self, dim, new_length*getattr(self, dim))
+            return
+        # This case only applies to single vectors
+        if self.nV == 1 and l == 0:
+            assert self.length == 0, \
+                'Nonzero length should be resized in the first case'
+            for dim in self.dims:
+                setattr(self, dim, 0.)
+            return
+        # This case only applies if vectors with length == 0
+        # in an array are getting resized to 0
+        if self.nV > 1 and np.array_equal(self.length.nonzero(), l.nonzero()):
+            new_length = l/[x if x != 0 else 1 for x in self.length]
+            for dim in self.dims:
+                setattr(self, dim, new_length*getattr(self, dim))
+            return
+        # Error if length zero array is resized to nonzero value
+        raise ZeroDivisionError('Cannot resize vector of length 0 to '
+                                'nonzero length')
+
+    def dot(self, vec):
+        """Dot product with another vector"""
+        if not isinstance(vec, self.__class__):
+            raise TypeError('Dot product operand must be a VectorArray')
+        if self.nV != 1 and vec.nV != 1 and self.nV != vec.nV:
+            raise ValueError('Dot product operands must have the same '
+                             'number of elements.')
+        return np.sum((getattr(self, d)*getattr(vec, d) for d in self.dims), 1)
+
+
 class Vector3Array(VectorArray):
-    """
-        Primitive vectors, or list of primitive vectors,
-        defined from the origin.
-    """
+    """List of primitive Vector3"""
 
     def __new__(cls, x=None, y=None, z=None):
 
@@ -266,50 +299,8 @@ class Vector3Array(VectorArray):
         self[:, 2] = value
 
     @property
-    def length(self):
-        """Vector3 lengths"""
-        return np.sqrt(np.sum(self**2, axis=1)).view(np.ndarray)
-
-    @length.setter
-    def length(self, l):
-        l = np.array(l)
-        if self.nV != l.size:
-            raise ValueError('Length vector must be the same number of '
-                             'elements as vector.')
-        # This case resizes all vectors with nonzero length
-        if np.all(self.length != 0):
-            new_length = l/self.length
-            self.x *= new_length
-            self.y *= new_length
-            self.z *= new_length
-            return
-        # This case only applies to single vectors
-        # if self.length == 0 and l == 0
-        if self.nV == 1 and l == 0:
-            assert self.length == 0, \
-                'Nonzero length should be resized in the first case'
-            self.x, self.y, self.z = 0, 0, 0
-            return
-        # This case only applies if vectors with length == 0
-        # in an array are getting resized to 0
-        if self.nV > 1 and np.array_equal(self.length.nonzero(), l.nonzero()):
-            new_length = l/[x if x != 0 else 1 for x in self.length]
-            self.x *= new_length
-            self.y *= new_length
-            self.z *= new_length
-            return
-        # Error if length zero array is resized to nonzero value
-        raise ZeroDivisionError('Cannot resize vector of length 0 to '
-                                'nonzero length')
-
-    def dot(self, vec):
-        """Dot product with another vector"""
-        if not isinstance(vec, Vector3Array):
-            raise TypeError('Dot product operand must be a vector')
-        if self.nV != 1 and vec.nV != 1 and self.nV != vec.nV:
-            raise ValueError('Dot product operands must have the same '
-                             'number of elements.')
-        return self.x*vec.x + self.y*vec.y + self.z*vec.z
+    def dims(self):
+        return ('x', 'y', 'z')
 
     def cross(self, vec):
         """Cross product with another vector"""
@@ -322,10 +313,7 @@ class Vector3Array(VectorArray):
 
 
 class Vector2Array(VectorArray):
-    """
-        Primitive vectors, or list of primitive vectors,
-        defined from the origin.
-    """
+    """List of primitive Vector2"""
 
     def __new__(cls, x=None, y=None):
 
@@ -379,45 +367,5 @@ class Vector2Array(VectorArray):
         return item_out.view(np.ndarray)
 
     @property
-    def length(self):
-        """Vector3 length"""
-        return np.sqrt(np.sum(self**2, axis=1)).view(np.ndarray)
-
-    @length.setter
-    def length(self, l):
-        l = np.array(l)
-        if self.nV != l.size:
-            raise ValueError('Length vector must be the same number of '
-                             'elements as vector.')
-        # This case resizes all vectors with nonzero length
-        if np.all(self.length != 0):
-            new_length = l/self.length
-            self.x *= new_length
-            self.y *= new_length
-            return
-        # This case only applies to single vectors
-        # if self.length == 0 and l == 0
-        if self.nV == 1 and l == 0:
-            assert self.length == 0, \
-                'Nonzero length should be resized in the first case'
-            self.x, self.y = 0, 0
-            return
-        # This case only applies if vectors with length == 0
-        # in an array are getting resized to 0
-        if self.nV > 1 and np.array_equal(self.length.nonzero(), l.nonzero()):
-            new_length = l/[x if x != 0 else 1 for x in self.length]
-            self.x *= new_length
-            self.y *= new_length
-            return
-        # Error if length zero array is resized to nonzero value
-        raise ZeroDivisionError('Cannot resize vector of length 0 to '
-                                'nonzero length')
-
-    def dot(self, vec):
-        """Dot product with another vector"""
-        if not isinstance(vec, Vector2Array):
-            raise TypeError('Dot product operand must be a Vector2Array')
-        if self.nV != 1 and vec.nV != 1 and self.nV != vec.nV:
-            raise ValueError('Dot product operands must have the same '
-                             'number of elements.')
-        return self.x*vec.x + self.y*vec.y
+    def dims(self):
+        return ('x', 'y')
