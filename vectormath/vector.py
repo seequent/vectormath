@@ -6,7 +6,99 @@ from __future__ import unicode_literals
 import numpy as np
 
 
-class Vector3(np.ndarray):
+class Vector(np.ndarray):
+
+    def __new__(cls, *args, **kwargs):
+
+        try:
+            return Vector3(*args, **kwargs)
+        except:
+            pass
+        try:
+            return Vector2(*args, **kwargs)
+        except:
+            pass
+        raise NotImplementedError('Please use Vector2 or Vector3 classes')
+
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+
+    @property
+    def x(self):
+        return self[0]
+
+    @x.setter
+    def x(self, value):
+        self[0] = value
+
+    @property
+    def y(self):
+        return self[1]
+
+    @y.setter
+    def y(self, value):
+        self[1] = value
+
+    @property
+    def length(self):
+        """Vector3 length"""
+        return float(np.sqrt(np.sum(self**2)))
+
+    @length.setter
+    def length(self, l):
+        if not np.isscalar(l):
+            raise ValueError('Length must be a scalar')
+        l = float(l)
+        if self.length != 0:
+            new_length = l/self.length
+            self *= new_length
+            return
+        if l != 0:
+            raise ZeroDivisionError('Cannot resize vector of length 0 to '
+                                    'nonzero length')
+
+    def as_length(self, l):
+        """Scale the length of a vector to a value"""
+        V = self.copy()
+        V.length = l
+        return V
+
+    def as_percent(self, p):
+        """Scale the length of a vector by a percent"""
+        V = self.copy()
+        V.length = p * self.length
+        return V
+
+    def as_unit(self):
+        """Scale the length of a vector to 1"""
+        V = self.copy()
+        V.normalize()
+        return V
+
+    def normalize(self):
+        """Scale the length of a vector to 1 in place"""
+        self.length = 1
+        return self
+
+    def dot(self, vec):
+        """Dot product with another vector"""
+        if not isinstance(vec, self.__class__):
+            raise TypeError('Dot product operand must be a vector')
+        return self.__class__(np.dot(self, vec))
+
+    def cross(self, vec):
+        """Cross product with another vector"""
+        if not isinstance(vec, self.__class__):
+            raise TypeError('Cross product operand must be a vector')
+        return self.__class__(np.cross(self, vec))
+
+    def __mul__(self, m):
+        return self.__class__(self.view(np.ndarray) * m)
+
+
+
+class Vector3(Vector):
     """Primitive 3D vector defined from the origin"""
 
     def __new__(cls, x=None, y=None, z=None):
@@ -29,26 +121,6 @@ class Vector3(np.ndarray):
 
         return read_array(x, y, z)
 
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
-
-    @property
-    def x(self):
-        return self[0]
-
-    @x.setter
-    def x(self, value):
-        self[0] = value
-
-    @property
-    def y(self):
-        return self[1]
-
-    @y.setter
-    def y(self, value):
-        self[1] = value
-
     @property
     def z(self):
         return self[2]
@@ -57,66 +129,8 @@ class Vector3(np.ndarray):
     def z(self, value):
         self[2] = value
 
-    @property
-    def length(self):
-        """Vector3 length"""
-        return float(np.sqrt(np.sum(self**2)))
 
-    @length.setter
-    def length(self, l):
-        if not np.isscalar(l):
-            raise ValueError('Length must be a scalar')
-        l = float(l)
-        if self.length != 0:
-            new_length = l/self.length
-            self.x *= new_length
-            self.y *= new_length
-            self.z *= new_length
-            return
-        if l != 0:
-            raise ZeroDivisionError('Cannot resize vector of length 0 to '
-                                    'nonzero length')
-
-    def as_length(self, l):
-        """Scale the length of a vector to a value"""
-        V = self.copy()
-        V.length = l
-        return V
-
-    def as_percent(self, p):
-        """Scale the length of a vector by a percent"""
-        V = self.copy()
-        V.length = p * self.length
-        return V
-
-    def as_unit(self):
-        """Scale the length of a vector to 1"""
-        V = self.copy()
-        V.normalize()
-        return V
-
-    def normalize(self):
-        """Scale the length of a vector to 1 in place"""
-        self.length = 1
-        return self
-
-    def dot(self, vec):
-        """Dot product with another vector"""
-        if not isinstance(vec, Vector3):
-            raise TypeError('Dot product operand must be a vector')
-        return float(self.x*vec.x + self.y*vec.y + self.z*vec.z)
-
-    def cross(self, vec):
-        """Cross product with another vector"""
-        if not isinstance(vec, Vector3):
-            raise TypeError('Cross product operand must be a vector')
-        return Vector3(np.cross(self, vec))
-
-    def __mul__(self, m):
-        return Vector3(self.view(np.ndarray) * m)
-
-
-class Vector2(np.ndarray):
+class Vector2(Vector):
     """Primitive 2D vector defined from the origin"""
 
     def __new__(cls, x=None, y=None):
@@ -139,85 +153,52 @@ class Vector2(np.ndarray):
 
         return read_array(x, y)
 
+
+class VectorArray(Vector):
+
+    def __new__(cls, *args, **kwargs):
+
+        try:
+            return Vector3Array(*args, **kwargs)
+        except:
+            pass
+        try:
+            return Vector2Array(*args, **kwargs)
+        except:
+            pass
+        raise NotImplementedError('Please use Vector2Array or Vector3Array')
+
     def __array_finalize__(self, obj):
         if obj is None:
             return
 
     @property
     def x(self):
-        return self[0]
+        return self[:, 0]
 
     @x.setter
     def x(self, value):
-        self[0] = value
+        self[:, 0] = value
 
     @property
     def y(self):
-        return self[1]
+        return self[:, 1]
 
     @y.setter
     def y(self, value):
-        self[1] = value
+        self[:, 1] = value
 
     @property
-    def length(self):
-        """Vector3 length"""
-        return float(np.sqrt(np.sum(self**2)))
-
-    @length.setter
-    def length(self, l):
-        if not np.isscalar(l):
-            raise ValueError('Length must be a scalar')
-        l = float(l)
-        if self.length != 0:
-            new_length = l/self.length
-            self.x *= new_length
-            self.y *= new_length
-            return
-        if l != 0:
-            raise ZeroDivisionError('Cannot resize vector of length 0 to '
-                                    'nonzero length')
-
-    def as_length(self, l):
-        """Scale the length of a vector to a value"""
-        V = self.copy()
-        V.length = l
-        return V
-
-    def as_percent(self, p):
-        """Scale the length of a vector by a percent"""
-        V = self.copy()
-        V.length = p * self.length
-        return V
-
-    def as_unit(self):
-        """Scale the length of a vector to 1"""
-        V = self.copy()
-        V.normalize()
-        return V
+    def nV(self):
+        """Number of vectors"""
+        return self.shape[0]
 
     def normalize(self):
         """Scale the length of a vector to 1 in place"""
-        self.length = 1
+        self.length = np.ones(self.nV)
         return self
 
-    def dot(self, vec):
-        """Dot product with another vector"""
-        if not isinstance(vec, Vector2):
-            raise TypeError('Dot product operand must be a vector')
-        return float(self.x*vec.x + self.y*vec.y)
-
-    def cross(self, vec):
-        """Cross product with another vector"""
-        if not isinstance(vec, Vector2):
-            raise TypeError('Cross product operand must be a vector')
-        return Vector2(np.cross(self, vec))
-
-    def __mul__(self, m):
-        return Vector2(self.view(np.ndarray) * m)
-
-
-class Vector3Array(np.ndarray):
+class Vector3Array(VectorArray):
     """
         Primitive vectors, or list of primitive vectors,
         defined from the origin.
@@ -268,10 +249,6 @@ class Vector3Array(np.ndarray):
 
         return read_array(x, y, z)
 
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
-
     def __getitem__(self, i):
         item_out = super(Vector3Array, self).__getitem__(i)
         if np.isscalar(i):
@@ -281,33 +258,12 @@ class Vector3Array(np.ndarray):
         return item_out.view(np.ndarray)
 
     @property
-    def x(self):
-        return self[:, 0]
-
-    @x.setter
-    def x(self, value):
-        self[:, 0] = value
-
-    @property
-    def y(self):
-        return self[:, 1]
-
-    @y.setter
-    def y(self, value):
-        self[:, 1] = value
-
-    @property
     def z(self):
         return self[:, 2]
 
     @z.setter
     def z(self, value):
         self[:, 2] = value
-
-    @property
-    def nV(self):
-        """Number of vectors"""
-        return self.shape[0]
 
     @property
     def length(self):
@@ -346,29 +302,6 @@ class Vector3Array(np.ndarray):
         raise ZeroDivisionError('Cannot resize vector of length 0 to '
                                 'nonzero length')
 
-    def as_length(self, l):
-        """Scale the length of a vector to a value"""
-        V = self.copy()
-        V.length = l
-        return V
-
-    def as_percent(self, p):
-        """Scale the length of a vector by a percent"""
-        V = self.copy()
-        V.length = p * self.length
-        return V
-
-    def as_unit(self):
-        """Scale the length of a vector to 1"""
-        V = self.copy()
-        V.normalize()
-        return V
-
-    def normalize(self):
-        """Scale the length of a vector to 1 in place"""
-        self.length = np.ones(self.nV)
-        return self
-
     def dot(self, vec):
         """Dot product with another vector"""
         if not isinstance(vec, Vector3Array):
@@ -387,11 +320,8 @@ class Vector3Array(np.ndarray):
                              'number of elements.')
         return Vector3Array(np.cross(self, vec))
 
-    def __mul__(self, m):
-        return Vector3Array(self.view(np.ndarray) * m)
 
-
-class Vector2Array(np.ndarray):
+class Vector2Array(VectorArray):
     """
         Primitive vectors, or list of primitive vectors,
         defined from the origin.
@@ -440,10 +370,6 @@ class Vector2Array(np.ndarray):
 
         return read_array(x, y)
 
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
-
     def __getitem__(self, i):
         item_out = super(Vector2Array, self).__getitem__(i)
         if np.isscalar(i):
@@ -451,31 +377,6 @@ class Vector2Array(np.ndarray):
         if isinstance(i, slice):
             return item_out
         return item_out.view(np.ndarray)
-
-    @property
-    def x(self):
-        return self[:, 0]
-
-    @x.setter
-    def x(self, value):
-        self[:, 0] = value
-
-    @property
-    def y(self):
-        return self[:, 1]
-
-    @y.setter
-    def y(self, value):
-        self[:, 1] = value
-
-    @property
-    def z(self):
-        raise Exception("Vector2 does not have a z property")
-
-    @property
-    def nV(self):
-        """Number of vectors"""
-        return self.shape[0]
 
     @property
     def length(self):
@@ -512,29 +413,6 @@ class Vector2Array(np.ndarray):
         raise ZeroDivisionError('Cannot resize vector of length 0 to '
                                 'nonzero length')
 
-    def as_length(self, l):
-        """Scale the length of a vector to a value"""
-        V = self.copy()
-        V.length = l
-        return V
-
-    def as_percent(self, p):
-        """Scale the length of a vector by a percent"""
-        V = self.copy()
-        V.length = p * self.length
-        return V
-
-    def as_unit(self):
-        """Scale the length of a vector to 1"""
-        V = self.copy()
-        V.normalize()
-        return V
-
-    def normalize(self):
-        """Scale the length of a vector to 1 in place"""
-        self.length = np.ones(self.nV)
-        return self
-
     def dot(self, vec):
         """Dot product with another vector"""
         if not isinstance(vec, Vector2Array):
@@ -543,6 +421,3 @@ class Vector2Array(np.ndarray):
             raise ValueError('Dot product operands must have the same '
                              'number of elements.')
         return self.x*vec.x + self.y*vec.y
-
-    def __mul__(self, m):
-        return Vector2Array(self.view(np.ndarray) * m)
