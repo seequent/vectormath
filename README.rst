@@ -55,7 +55,7 @@ Alternatives
 
 * `NumPy <http://www.numpy.org/>`_ can be used for any array operations
 * Many small libraries on PyPI (e.g. `vectors <https://github.com/allelos/vectors>`_)
-  which implement vector math operations but are are only built with single vectors
+  implement vector math operations but are are only built with single vectors
   in mind.
 
 Connections
