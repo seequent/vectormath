@@ -243,7 +243,7 @@ class TestVMathVector2(unittest.TestCase):
         v2 = v1.as_length(1)
         self.assertTrue(v1 is not v2)
         self.assertTrue(v1.length == np.sqrt(2))
-        self.assertAlmostEqual(v2.length, 1)
+        self.assertAlmostEqual(v2.length[0], 1)
 
         v3 = Vector2Array(np.r_[1, 2], np.r_[1, 2])
         v4 = v3.as_length([1, 2])
@@ -285,7 +285,7 @@ class TestVMathVector2(unittest.TestCase):
         self.assertTrue(np.allclose(v4.length, [1, 1]))
         v5 = Vector2Array(1, 1)
         v6 = v5.as_unit()
-        self.assertAlmostEqual(v6.length, 1)
+        self.assertAlmostEqual(v6.length[0], 1)
         self.assertTrue(v6.x == v6.y)
         v7 = Vector2Array()
 
@@ -308,7 +308,6 @@ class TestVMathVector2(unittest.TestCase):
         self.assertTrue(isinstance(v1[4, :], np.ndarray))
         self.assertTrue(isinstance(v1.x, np.ndarray))
         self.assertTrue(isinstance(v1[1:30, :], np.ndarray))
-
 
 
 if __name__ == '__main__':

@@ -13,9 +13,11 @@ class TestVMathVector3(unittest.TestCase):
 
     def test_init_exceptions(self):
         self.assertRaises(TypeError, Vector3Array, np.r_[1], np.r_[1], 3)
-        self.assertRaises(ValueError, Vector3Array, np.r_[1, 2], np.r_[1], np.r_[1])
+        self.assertRaises(ValueError,
+                          Vector3Array, np.r_[1, 2], np.r_[1], np.r_[1])
         self.assertRaises(ValueError, Vector3Array, np.array([0, 0]))
-        self.assertRaises(ValueError, Vector3Array, 'Make', ' me a ', 'vector!')
+        self.assertRaises(ValueError,
+                          Vector3Array, 'Make', ' me a ', 'vector!')
         self.assertRaises(ValueError, Vector3Array, ([0, 0], [0, 0], [0, 0]))
 
     def test_init(self):
@@ -27,7 +29,9 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(v1 is not v3)
         v4 = Vector3Array(np.r_[0, 0, 0])
         self.assertTrue(np.array_equal(v1, v4))
-        v5 = Vector3Array(np.c_[np.r_[1, 0, 0], np.r_[0, 1, 0], np.r_[0, 0, 1]])
+        v5 = Vector3Array(np.c_[np.r_[1, 0, 0],
+                                np.r_[0, 1, 0],
+                                np.r_[0, 0, 1]])
         self.assertTrue(np.array_equal(v5.length, np.r_[1, 1, 1]))
         v6 = Vector3Array(np.r_[1, 0, 0], np.r_[0, 1, 0], np.r_[0, 0, 1])
         self.assertTrue(np.array_equal(v6.length, np.r_[1, 1, 1]))
@@ -64,11 +68,8 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(v2[0, 2] == 3)
         self.assertTrue(len(v2[0]) == 3)
 
-        def f(): v2[3]
-        self.assertRaises(IndexError, f)
-
-        def f(): v2[0, 3]
-        self.assertRaises(IndexError, f)
+        self.assertRaises(IndexError, lambda: v2[3])
+        self.assertRaises(IndexError, lambda: v2[0, 3])
         l = []
         for x in v2[0]:
             l.append(x)
@@ -76,7 +77,7 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(np.array_equal(v2, Vector3Array(l)))
         l = []
         v3 = Vector3Array([[1, 2, 3],
-                     [2, 3, 4]])
+                           [2, 3, 4]])
         for v in v3:
             l.append(v)
         self.assertTrue(np.array_equal(
@@ -99,7 +100,9 @@ class TestVMathVector3(unittest.TestCase):
     def test_size(self):
         v1 = Vector3Array()
         self.assertTrue(v1.nV == 1)
-        v2 = Vector3Array(np.c_[np.r_[1, 0, 0], np.r_[0, 1, 0], np.r_[0, 0, 1]])
+        v2 = Vector3Array(np.c_[np.r_[1, 0, 0],
+                                np.r_[0, 1, 0],
+                                np.r_[0, 0, 1]])
         self.assertTrue(v2.nV == 3)
         v3 = Vector3Array(
             [0, 0, 0, 0, 0],
@@ -122,7 +125,7 @@ class TestVMathVector3(unittest.TestCase):
         v1.z = 2
         self.assertTrue(v1.z == 2)
         v2 = Vector3Array([[0, 1, 2],
-                     [1, 2, 3]])
+                           [1, 2, 3]])
         self.assertTrue(np.array_equal(v2.x, [0, 1]))
         v2.x = [0, -1]
         self.assertTrue(np.array_equal(v2.x, [0, -1]))
@@ -143,8 +146,7 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(v3.length == 5)
         v4 = Vector3Array(np.r_[1, 1], np.r_[0, 0], np.r_[1, 2])
 
-        def f(): v4.length = 5
-        self.assertRaises(ValueError, f)
+        self.assertRaises(ValueError, lambda: setattr(v4, 'length', 5))
         v5 = Vector3Array(np.r_[1, 0], np.r_[0, 0], np.r_[0, 1])
         self.assertTrue(np.array_equal(v5.length, [1, 1]))
         v5.length = [-1, 3]
@@ -153,8 +155,7 @@ class TestVMathVector3(unittest.TestCase):
         v6 = Vector3Array()
         self.assertTrue(v6.length == 0)
 
-        def f(): v6.length = 5
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError, lambda: setattr(v6, 'length', 5))
         v6.length = 0
         self.assertTrue(v6.length == 0)
         v7 = Vector3Array(
@@ -164,8 +165,8 @@ class TestVMathVector3(unittest.TestCase):
         )
         length = [5, 5, 5, 5, 5]
 
-        def f(): v7.length = length
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError,
+                          lambda: setattr(v7, 'length', length))
         length = [5, 5, 5, 0, 0]
         v7.length = length
         self.assertTrue(np.array_equal(length, v7.length))
@@ -205,11 +206,8 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(np.array_equal(v1l.dot(v2), np.r_[6, 6]))
         v3 = Vector3Array([3]*4, [3]*4, [3]*4)
 
-        def f(): v3.dot(v2l)
-        self.assertRaises(ValueError, f)
-
-        def f(): v3.dot(5)
-        self.assertRaises(TypeError, f)
+        self.assertRaises(ValueError, lambda: v3.dot(v2l))
+        self.assertRaises(TypeError, lambda: v3.dot(5))
 
     def test_cross(self):
         v1 = Vector3Array(1, 0, 0)
@@ -232,7 +230,7 @@ class TestVMathVector3(unittest.TestCase):
         v1 = Vector3Array(10, 0, 0)
         v2 = Vector3Array(20, 0, 0)
         self.assertTrue(np.array_equal(v1.as_percent(2), v2))
-        self.assertTrue(np.array_equal(v1, Vector3Array(10, 0, 0)))   # not copied
+        self.assertTrue(np.array_equal(v1, Vector3Array(10, 0, 0)))# not copied
         v3 = Vector3Array(
             [0, 0, 2, 0, 0],
             [0, 2, 0, 0, 0],
@@ -245,8 +243,8 @@ class TestVMathVector3(unittest.TestCase):
         v6 = Vector3Array(5, 5, 5)
         self.assertTrue(np.array_equal(v6.as_percent(0), v5))
 
-        def f(): v6.as_percent('One Hundred Percent')
-        self.assertRaises(TypeError, f)
+        self.assertRaises(TypeError,
+                          lambda: v6.as_percent('One Hundred Percent'))
 
     def test_normalize(self):
         v1 = Vector3Array(5, 0, 0)
@@ -255,8 +253,7 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(v1.length == 1)
         v2 = Vector3Array()
 
-        def f(): v2.normalize()
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError, lambda: v2.normalize())
         v3 = Vector3Array(
             [0, 0, 2],
             [0, 2, 0],
@@ -277,8 +274,7 @@ class TestVMathVector3(unittest.TestCase):
         v4 = v3.as_length([1, 2])
         self.assertTrue(np.array_equal(v4.length, [1, 2]))
 
-        def f(): v = v3.as_length(5)
-        self.assertRaises(ValueError, f)
+        self.assertRaises(ValueError, lambda: v3.as_length(5))
         v5 = Vector3Array(np.r_[1, 0], np.r_[0, 0], np.r_[0, 1])
         self.assertTrue(np.array_equal(v5.length, [1, 1]))
         v6 = v5.as_length([-1, 3])
@@ -286,8 +282,7 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(np.array_equal(v6.length, [1, 3]))
         v7 = Vector3Array()
 
-        def f(): v = v7.as_length(5)
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError, lambda: v7.as_length(5))
         v8 = v7.as_length(0)
         self.assertTrue(v8.length == 0)
         v9 = Vector3Array(
@@ -297,8 +292,7 @@ class TestVMathVector3(unittest.TestCase):
         )
         length = [5, 5, 5, 5, 5]
 
-        def f(): v = v9.as_length(length)
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError, lambda: v9.as_length(length))
         length = [5, 5, 5, 0, 0]
         v10 = v9.as_length(length)
         self.assertTrue(np.array_equal(length, v10.length))
@@ -319,16 +313,14 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(v6.z == v6.y)
         v7 = Vector3Array()
 
-        def f(): v = v7.as_unit()
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError, v7.as_unit)
         v9 = Vector3Array(
             [0, 0, 1, 0, 0],
             [0, 1, 0, 0, 0],
             [1, 0, 0, 0, 0]
         )
 
-        def f(): v = v9.as_unit()
-        self.assertRaises(ZeroDivisionError, f)
+        self.assertRaises(ZeroDivisionError, v9.as_unit)
 
     def test_view_types(self):
         v1 = Vector3Array(np.random.rand(100, 3))
