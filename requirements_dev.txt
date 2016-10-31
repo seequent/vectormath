@@ -2,3 +2,4 @@ nose-cov
 python-coveralls
 sphinx
 sphinxcontrib-pyexec
+pylint
