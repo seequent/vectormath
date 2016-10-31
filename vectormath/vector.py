@@ -33,7 +33,7 @@ class BaseVector(np.ndarray):
 
     @property
     def length(self):
-        """Vector3 length"""
+        """Vector length"""
         return float(np.sqrt(np.sum(self**2)))
 
     @length.setter
@@ -181,7 +181,7 @@ class BaseVectorArray(BaseVector):
 
     @property
     def length(self):
-        """Vector3 lengths"""
+        """Array of vector lengths"""
         return np.sqrt(np.sum(self**2, axis=1)).view(np.ndarray)
 
     @length.setter
@@ -225,7 +225,7 @@ class BaseVectorArray(BaseVector):
 
 
 class Vector3Array(BaseVectorArray):
-    """List of primitive Vector3"""
+    """List of Vector3"""
 
     def __new__(cls, x=None, y=None, z=None):
 
@@ -303,7 +303,7 @@ class Vector3Array(BaseVectorArray):
 
 
 class Vector2Array(BaseVectorArray):
-    """List of primitive Vector2"""
+    """List of Vector2"""
 
     def __new__(cls, x=None, y=None):
 
