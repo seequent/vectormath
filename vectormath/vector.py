@@ -9,12 +9,7 @@ import numpy as np
 class BaseVector(np.ndarray):
 
     def __new__(cls, *args, **kwargs):
-        for vcls in (Vector3, Vector2):
-            try:
-                return vcls(*args, **kwargs)
-            except:
-                pass
-        raise NotImplementedError('Please use Vector2 or Vector3 classes')
+        raise NotImplementedError('Please specify Vector2 or Vector3')
 
     def __array_finalize__(self, obj):
         if obj is None:
@@ -152,11 +147,6 @@ class Vector2(BaseVector):
 class BaseVectorArray(BaseVector):
 
     def __new__(cls, *args, **kwargs):
-        for vcls in (Vector3Array, Vector2Array):
-            try:
-                return vcls(*args, **kwargs)
-            except:
-                pass
         raise NotImplementedError('Please use Vector2Array or Vector3Array')
 
     @property
@@ -187,7 +177,7 @@ class BaseVectorArray(BaseVector):
 
     @property
     def dims(self):
-        raise NotImplementedError('VectorArray does not have specified dims')
+        raise NotImplementedError('Please use Vector2Array or Vector3Array')
 
     @property
     def length(self):
