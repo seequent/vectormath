@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-'''
-    steno3d: Client library for Steno3D & steno3d.com
-'''
+"""
+    Vector math utilities for Python
+"""
 
 from distutils.core import setup
 from setuptools import find_packages
@@ -24,7 +24,7 @@ with open('README.rst') as f:
 
 setup(
     name='vectormath',
-    version='0.0.3',
+    version='0.1.0',
     packages=find_packages(),
     install_requires=[
         'future',

@@ -1,19 +1,22 @@
+"""matutils.py defines several utilities for tensor/OUV/vector manipulation"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from . import vector
 import numpy as np
 
+from . import vector
 
-def mkvc(v):
-    """Make vector (Fortran ordering)"""
-    return v.flatten(order='F')
+
+def mkvc(vec):
+    """Flatten vector with Fortran (column-major) ordering"""
+    return vec.flatten(order='F')
 
 
 def ndgrid(*args, **kwargs):
     """Form tensorial grid for 1, 2, or 3 dimensions.
+
     Returns as column vectors by default.
     To return as matrix input::
 
@@ -45,78 +48,87 @@ def ndgrid(*args, **kwargs):
     """
 
     # Read the keyword arguments, and only accept a vector=True/False
-    vector = kwargs.pop('vector', True)
-    assert type(vector) == bool, "'vector' keyword must be a bool"
-    assert len(kwargs) == 0, "Only 'vector' keyword accepted"
+    vec = kwargs.pop('vector', True)
+    assert isinstance(vec, bool), '\'vector\' keyword must be a bool'
+    assert len(kwargs) == 0, 'Only \'vector\' keyword accepted'
 
-    # you can either pass a list [x1, x2, x3] or each seperately
-    if type(args[0]) == list:
+    # you can either pass a list [x1, x2, x3] or each separately
+    if isinstance(args[0], list):
         xin = args[0]
     else:
         xin = args
 
     # Each vector needs to be a numpy array
     assert np.all([isinstance(x, np.ndarray) for x in xin]), (
-        "All vectors must be numpy arrays."
+        'All vectors must be numpy arrays'
     )
 
     if len(xin) == 1:
         return xin[0]
     elif len(xin) == 2:
-        XY = np.broadcast_arrays(
+        xy_arr = np.broadcast_arrays(
             mkvc(xin[1]),
             mkvc(xin[0])[:, np.newaxis]
         )
-        if vector:
-            X2, X1 = [mkvc(x) for x in XY]
-            return np.c_[X1, X2]
+        if vec:
+            x2_arr, x1_arr = [mkvc(x) for x in xy_arr]
+            return np.c_[x1_arr, x2_arr]
         else:
-            return XY[1], XY[0]
+            return xy_arr[1], xy_arr[0]
     elif len(xin) == 3:
-        XYZ = np.broadcast_arrays(
+        xyz_arr = np.broadcast_arrays(
             mkvc(xin[2]),
             mkvc(xin[1])[:, np.newaxis],
             mkvc(xin[0])[:, np.newaxis, np.newaxis]
         )
-        if vector:
-            X3, X2, X1 = [mkvc(x) for x in XYZ]
-            return np.c_[X1, X2, X3]
+        if vec:
+            x3_arr, x2_arr, x1_arr = [mkvc(x) for x in xyz_arr]
+            return np.c_[x1_arr, x2_arr, x3_arr]
         else:
-            return XYZ[2], XYZ[1], XYZ[0]
+            return xyz_arr[2], xyz_arr[1], xyz_arr[0]
 
 
-def ouv2vec(O, U, V, n):
-    """A grid in the parallelogram defined by the OUV vectors."""
+def ouv_to_vec(O, U, V, n):                                                    #pylint: disable=invalid-name
+    """A grid in the parallelogram defined by the OUV Vector3s and n cells
+
+    If len(n) == 2, n is (nx, ny)
+    If n is an integer, n is the number of cells in the longer dimension
+    (and cell x-width = y-width)
+    """
     aspect = U.length / V.length
-
-    if type(n) in [list, tuple]:
-        nx, ny = map(int, n)
+    if isinstance(n, (list, tuple)) and len(n) == 2:
+        numx, numy = int(n[0]), int(n[1])
+    elif np.isscalar(n):
+        numx = int(n) if aspect >= 1 else int(n*aspect)
+        numy = int(n / aspect) if aspect >= 1 else int(n)
     else:
-        nx = int(n) if aspect >= 1 else int(n*aspect)
-        ny = int(n / aspect) if aspect >= 1 else int(n)
-
-    square = ndgrid(np.linspace(0, 1, nx), np.linspace(1, 0, ny))
+        raise ValueError('n must be a scalar or a list/tuple of 2 scalars')
+    square = ndgrid(np.linspace(0, 1, numx), np.linspace(1, 0, numy))
     X = O.x + U.x * square[:, 0] + V.x * square[:, 1]
     Y = O.y + U.y * square[:, 0] + V.y * square[:, 1]
     Z = O.z + U.z * square[:, 0] + V.z * square[:, 1]
-    vec = vector.Vector3(X, Y, Z)
-    return vec, (nx, ny)
+    vec = vector.Vector3Array(X, Y, Z)
+    return vec, (numx, numy)
 
 
-def switchOUVZ(OUVZ1, OUVZ2, v):
+def switch_ouvz(ouvz1, ouvz2, vec):
     """Switches a vector from one OUVZ space to another."""
-    O1, U1, V1, Z1 = OUVZ1
-    O2, U2, V2, Z2 = OUVZ2
-    opu = (v - O1).dot(Vector3(U1).normalize()) / U1.length
-    opv = (v - O1).dot(Vector3(V1).normalize()) / V1.length
-    opz = (v - O1).dot(Vector3(Z1).normalize()) / Z1.length
-    return O2 + U2.asPercent(opu) + V2.asPercent(opv) + Z2.asPercent(opz)
+    O1, U1, V1, Z1 = ouvz1                                                     #pylint: disable=invalid-name
+    O2, U2, V2, Z2 = ouvz2                                                     #pylint: disable=invalid-name
+    opu = (vec - O1).dot(vector.Vector3Array(U1).normalize()) / U1.length
+    opv = (vec - O1).dot(vector.Vector3Array(V1).normalize()) / V1.length
+    opz = (vec - O1).dot(vector.Vector3Array(Z1).normalize()) / Z1.length
+    return O2 + U2.as_percent(opu) + V2.as_percent(opv) + Z2.as_percent(opz)
 
 
-def transformOUV(OUVZ1, OUVZ2, OUV):
+def transform_ouv(ouvz1, ouvz2, ouv):
     """Transforms a OUV reference from one OUVZ space to another."""
-    o, u, v = OUV
-    O = switchOUVZ(OUVZ1, OUVZ2, o)
-    U = switchOUVZ(OUVZ1, OUVZ2, o + u) - O
-    V = switchOUVZ(OUVZ1, OUVZ2, o + v) - O
-    return O, U, V
+    o_in, u_in, v_in = ouv
+    o_out = switch_ouvz(ouvz1, ouvz2, o_in)
+    u_out = switch_ouvz(ouvz1, ouvz2, o_in + u_in) - o_out
+    v_out = switch_ouvz(ouvz1, ouvz2, o_in + v_in) - o_out
+    return (o_out, u_out, v_out)
+
+def get_sd_from_normal(normal):                                                #pylint: disable=unused-argument
+    """Get Strike and Dip from normal"""
+    raise NotImplementedError('Get Strike/Dip from normal is not implemented')
