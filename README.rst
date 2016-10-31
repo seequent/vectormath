@@ -115,4 +115,4 @@ This example gives a brief demonstration of some of the notable features of
     print(type(v_array[1:, 1:]))      # >> numpy.ndarray
 
 
-Current version: v0.0.3
+Current version: v0.1.0
