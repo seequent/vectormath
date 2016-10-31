@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import numpy as np
 
 
-class Vector(np.ndarray):
+class BaseVector(np.ndarray):
 
     def __new__(cls, *args, **kwargs):
         for vcls in (Vector3, Vector2):
@@ -93,7 +93,7 @@ class Vector(np.ndarray):
         return self.__class__(self.view(np.ndarray) * m)
 
 
-class Vector3(Vector):
+class Vector3(BaseVector):
     """Primitive 3D vector defined from the origin"""
 
     def __new__(cls, x=None, y=None, z=None):
@@ -125,7 +125,7 @@ class Vector3(Vector):
         self[2] = value
 
 
-class Vector2(Vector):
+class Vector2(BaseVector):
     """Primitive 2D vector defined from the origin"""
 
     def __new__(cls, x=None, y=None):
@@ -149,7 +149,7 @@ class Vector2(Vector):
         return read_array(x, y)
 
 
-class VectorArray(Vector):
+class BaseVectorArray(BaseVector):
 
     def __new__(cls, *args, **kwargs):
         for vcls in (Vector3Array, Vector2Array):
@@ -234,7 +234,7 @@ class VectorArray(Vector):
         return np.sum((getattr(self, d)*getattr(vec, d) for d in self.dims), 1)
 
 
-class Vector3Array(VectorArray):
+class Vector3Array(BaseVectorArray):
     """List of primitive Vector3"""
 
     def __new__(cls, x=None, y=None, z=None):
@@ -312,7 +312,7 @@ class Vector3Array(VectorArray):
         return Vector3Array(np.cross(self, vec))
 
 
-class Vector2Array(VectorArray):
+class Vector2Array(BaseVectorArray):
     """List of primitive Vector2"""
 
     def __new__(cls, x=None, y=None):
