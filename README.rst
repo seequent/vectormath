@@ -27,7 +27,7 @@ Why
 
 The :code:`vectormath` package provides a fast, simple library of vector math
 utilities by leveraging NumPy. This allows explicit
-geometric constructs to be created (for example, :code:`Vector3` and :code:`Matrix`)
+geometric constructs to be created (for example, :code:`Vector3` and :code:`Plane`)
 without redefining the underlying array math.
 
 Scope
