@@ -80,8 +80,8 @@ class Matrix3(np.ndarray):
             return
 
     def __mul__(self, v):
-        if isinstance(v, Vector3Array):
-            return Vector3Array(self.dot(v.T).T)
+        if isinstance(v, (Vector3, Vector3Array)):
+            return v.__class__(self.dot(v.T).T)
         elif isinstance(v, Matrix3):
             return Matrix3(self.dot(v))
         return Matrix3(self.view(np.ndarray) * v)

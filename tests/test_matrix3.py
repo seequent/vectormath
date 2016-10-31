@@ -75,7 +75,7 @@ class TestVMathMatrix(unittest.TestCase):
         self.assertTrue(np.array_equal(M7, M5*M6))
 
     def test_rotation(self):
-        v = Vector3Array(1, 0, 0)
+        v = Vector3(1, 0, 0)
         M1 = Matrix3(+90, 'Z')
         M2 = Matrix3(-90, 'Z')
         self.assertAlmostEqual((M1 * v).x, 0)
