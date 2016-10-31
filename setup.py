@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-'''
-    steno3d: Client library for Steno3D & steno3d.com
-'''
+"""
+    Vector math utilities for Python
+"""
 
 from distutils.core import setup
 from setuptools import find_packages

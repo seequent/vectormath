@@ -4,7 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import unittest
-from vectormath import Vector3, Matrix3
+from vectormath import Vector3, Vector3Array, Matrix3
 import numpy as np
 
 
@@ -56,14 +56,14 @@ class TestVMathMatrix(unittest.TestCase):
         self.assertTrue(np.array_equal(M2, M3))
         M4 = 3 * M1
         self.assertTrue(np.array_equal(M4, M3))
-        v1 = Vector3()
+        v1 = Vector3Array()
         v2 = M1 * v1
         self.assertTrue(np.array_equal(v1, v2))
-        v2 = Vector3([[1, 2, 3], [-10, -20, 30]])
+        v2 = Vector3Array([[1, 2, 3], [-10, -20, 30]])
         M5 = Matrix3([[.5, 1, 1.5],
                       [-.5, 0, 0],
                       [1, 10, 100]])
-        v3 = Vector3([[7, -.5, 321], [20, 5, 2790]])
+        v3 = Vector3Array([[7, -.5, 321], [20, 5, 2790]])
         self.assertTrue(np.array_equal(M5*v2, v3))
         self.assertTrue(np.array_equal(M1, M1*M1))
         M6 = Matrix3([[0, 2, 4],

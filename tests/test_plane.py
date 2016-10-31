@@ -4,7 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import unittest
-from vectormath import Vector3, Matrix3, Plane
+from vectormath import Vector3, Vector3Array, Plane
 import numpy as np
 import six
 
@@ -19,7 +19,7 @@ class TestVMathPlane(unittest.TestCase):
         v2 = Vector3([1, 0, 0])
         self.assertRaises(ValueError, Plane, v1, v2, v2)
         self.assertRaises(ValueError, Plane, v2, 2*v2, 5*v2)
-        v3 = Vector3([[1, 0, 0], [0, 1, 0]])
+        v3 = Vector3Array([[1, 0, 0], [0, 1, 0]])
         self.assertRaises(ValueError, Plane, v3)
         v4 = Vector3([0, 0, 1])
         self.assertRaises(ValueError, Plane, v3, v4, v1)
@@ -61,10 +61,12 @@ class TestVMathPlane(unittest.TestCase):
         v4 = [3, 0, 0]
         v5 = [0, 0, 3]
         P2 = Plane(v3, v5, v4)
-        self.assertTrue(np.allclose(P2.normal, Vector3([1, 1, 1]).as_unit()))
+        self.assertTrue(np.allclose(P2.normal,
+                                    Vector3([1, 1, 1]).as_unit()))
         self.assertTrue(np.array_equal(P2.centroid, Vector3([1, 1, 1])))
         P3 = Plane(v3, v4, v5)
-        self.assertTrue(np.allclose(P3.normal, -Vector3([1, 1, 1]).as_unit()))
+        self.assertTrue(np.allclose(P3.normal,
+                                    -Vector3([1, 1, 1]).as_unit()))
         self.assertTrue(np.array_equal(P3.centroid, Vector3([1, 1, 1])))
 
     def test_init_fromStrikeAndDip(self):
@@ -83,7 +85,8 @@ class TestVMathPlane(unittest.TestCase):
         P5 = Plane(90, 90)
         self.assertTrue(np.allclose(P5.normal, Vector3(0, -1, 0)))
         P6 = Plane(0, 45)
-        self.assertTrue(np.allclose(P6.normal, Vector3(1, 0, 1).as_unit()))
+        self.assertTrue(np.allclose(P6.normal,
+                                    Vector3(1, 0, 1).as_unit()))
         P7 = Plane(12.44, 90)
         P8 = Plane(192.44, 90)
         self.assertTrue(np.allclose(P7.normal, -P8.normal))
@@ -94,11 +97,6 @@ class TestVMathPlane(unittest.TestCase):
         self.assertTrue(P1.B == 0)
         self.assertTrue(P1.C == 0)
         self.assertTrue(P1.D == 0)
-
-    # def test_getStrikeAndDipFromNormal(self):
-    #     P1 = Plane([1, 0, 0])
-    #     self.assertAlmostEqual(P1.strike, 0)
-    #     self.assertAlmostEqual(P1.dip, 90)
 
 
 if __name__ == '__main__':

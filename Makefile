@@ -1,5 +1,6 @@
+PACKAGE_NAME=vectormath
 
-.PHONY: install publish docs coverage lint graphs tests
+.PHONY: install publish docs coverage lint lint-html graphs tests
 
 install:
 	python setup.py install
@@ -11,14 +12,18 @@ docs:
 	cd docs && make html
 
 coverage:
-	nosetests --logging-level=INFO --with-coverage --cover-package=vectormath --cover-html
+	nosetests --logging-level=INFO --with-coverage --cover-package=$(PACKAGE_NAME) --cover-html
 	open cover/index.html
 
 lint:
-	pylint --output-format=html vectormath > pylint.html
+	pylint $(PACKAGE_NAME)
+
+lint-html:
+	pylint --output-format=html $(PACKAGE_NAME) > pylint.html
 
 graphs:
-	pyreverse -my -A -o pdf -p vectormathpy vectormath/**.py vectormath/**/**.py
+	pyreverse -my -A -o pdf -p vectormathpy $(PACKAGE_NAME)/**.py $(PACKAGE_NAME)/**/**.py
 
 tests:
-	nosetests --logging-level=INFO
+	nosetests --logging-level=INFO --with-coverage --cover-package=$(PACKAGE_NAME)
+	make lint
