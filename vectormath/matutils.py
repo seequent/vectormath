@@ -129,6 +129,6 @@ def transform_ouv(ouvz1, ouvz2, ouv):
     v_out = switch_ouvz(ouvz1, ouvz2, o_in + v_in) - o_out
     return (o_out, u_out, v_out)
 
-def get_sd_from_normal(normal):
+def get_sd_from_normal(normal):                                                #pylint: disable=unused-argument
     """Get Strike and Dip from normal"""
     raise NotImplementedError('Get Strike/Dip from normal is not implemented')
