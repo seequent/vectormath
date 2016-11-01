@@ -3,3 +3,4 @@ python-coveralls
 sphinx
 sphinxcontrib-pyexec
 pylint
+-e .
