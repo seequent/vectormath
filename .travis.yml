@@ -14,14 +14,13 @@ addons:
 
 install:
   - pip install -r requirements_dev.txt
-  - pip install -r requirements.txt
 
 script:
   - make tests
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - openssl aes-256-cbc -K $encrypted_17facfdb893b_key -iv $encrypted_17facfdb893b_iv -in .pypirc.enc -out ~/.pypirc -d
+  - openssl aes-256-cbc -K $encrypted_7585a52457ca_key -iv $encrypted_7585a52457ca_iv -in .pypirc.enc -out ~/.pypirc -d
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" -a $TRAVIS_PYTHON_VERSION == "2.7" -a -n "$(grep version setup.py | cut -d \' -f 2 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$')" ]; then
       make publish;
     fi
