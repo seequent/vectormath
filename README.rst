@@ -33,10 +33,8 @@ without redefining the underlying array math.
 Scope
 -----
 
-The :code:`vectormath` package includes :code:`Vector3`/:code:`Vector2`,
-:code:`Vector3Array`/:code:`Vector2Array`, :code:`Matrix3`, :code:`Plane`,
-and :code:`Parallelogram`. The latter three classes build on Vectors to
-simplify initialization and operations.
+The :code:`vectormath` package includes :code:`Vector3`/:code:`Vector2` and
+:code:`Vector3Array`/:code:`Vector2Array`.
 
 
 Goals
