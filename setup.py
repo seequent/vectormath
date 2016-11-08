@@ -27,8 +27,6 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     install_requires=[
-        'future',
-        'six',
         'numpy>=1.7',
     ],
     author='3point Science',
