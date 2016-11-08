@@ -24,11 +24,9 @@ with open('README.rst') as f:
 
 setup(
     name='vectormath',
-    version='0.1.0',
+    version='0.1.1',
     packages=find_packages(),
     install_requires=[
-        'future',
-        'six',
         'numpy>=1.7',
     ],
     author='3point Science',

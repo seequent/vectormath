@@ -33,10 +33,8 @@ without redefining the underlying array math.
 Scope
 -----
 
-The :code:`vectormath` package includes :code:`Vector3`/:code:`Vector2`,
-:code:`Vector3Array`/:code:`Vector2Array`, :code:`Matrix3`, :code:`Plane`,
-and :code:`Parallelogram`. The latter three classes build on Vectors to
-simplify initialization and operations.
+The :code:`vectormath` package includes :code:`Vector3`/:code:`Vector2` and
+:code:`Vector3Array`/:code:`Vector2Array`.
 
 
 Goals
@@ -115,4 +113,4 @@ This example gives a brief demonstration of some of the notable features of
     print(type(v_array[1:, 1:]))      # >> numpy.ndarray
 
 
-Current version: v0.1.0
+Current version: v0.1.1
