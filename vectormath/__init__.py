@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 
 from .vector import Vector3, Vector2, Vector3Array, Vector2Array
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __author__ = '3point Science'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2016 3point Science'
