@@ -29,5 +29,5 @@ after_success:
     fi
 
 notifications:
-  slack: 3point:n4uGopqXrpbYFbslpV5z0tyO
+  slack:
   email: false
