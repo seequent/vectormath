@@ -1,11 +1,15 @@
 language: python
 python:
-  - 3.3
+  - 2.7
   - 3.4
   - 3.5
-  - 2.7
+  - 3.6
 
 sudo: false
+
+matrix:
+  allow_failures:
+    - python: 3.6
 
 addons:
   apt:
