@@ -1,11 +1,15 @@
 language: python
 python:
-  - 3.3
+  - 2.7
   - 3.4
   - 3.5
-  - 2.7
+  - 3.6
 
 sudo: false
+
+matrix:
+  allow_failures:
+    - python: 3.6
 
 addons:
   apt:
@@ -20,7 +24,7 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - openssl aes-256-cbc -K $encrypted_7585a52457ca_key -iv $encrypted_7585a52457ca_iv -in .pypirc.enc -out ~/.pypirc -d
+  - openssl aes-256-cbc -K $encrypted_0f57b1eef12d_key -iv $encrypted_0f57b1eef12d_iv -in .pypirc.enc -out ~/.pypirc -d
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" -a $TRAVIS_PYTHON_VERSION == "2.7" -a -n "$(grep version setup.py | cut -d \' -f 2 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$')" ]; then
       make publish;
     fi
@@ -29,5 +33,6 @@ after_success:
     fi
 
 notifications:
-  slack: 3point:n4uGopqXrpbYFbslpV5z0tyO
+  slack:
+    secure: "C8P6i9K+OjBLPngi1R20OVL4Xe6xe5DCfUMR33ebHtMA/sfUnMuoRgZf5f+wjWsJNBBVC6kRFBETk4/SlWTwu0VrjFPsFjRqjX9fy/jOt2s5PD+hVGclx1fDd8t8FDsWJ9KMG15hKgoM2BFnOC9MOI7mvRt1V4PvskJ9rhqzLw3gdvwsAM0fFs12CE0lEQowieLKnIoBtWIV/ihfnorLid3led+b+vCKZcSLig3FR1fN56yS9qJXPw7lgUZX5qyyL1gHrV+VKX+fQpI/tDX611w6BLHlx0Y45pDH5jVGtMoQzhxQ6QH2ibrdw/3hHE9Ki7CS36h8oyzQ7hxXP6iwI16uPUqJRIqwdQcaHvNP7CnpnCyRtbhbOS0fCHjduXKWo+ttP++1x11vlj2F4qOg9tEWQH/6EU4rmo/naUwrTtybTUY0UmWWx8ASF4/kjZSYr9b0xZHwM3nVAwlfxNokvk/BPZs04/lm42UucZEC+IbVV4LTh1TURbXScDKj5Ve01nUfhrQkAqcl4TsQ1n2PAG+T//Ia3vO9r2w5kBSNaXA0Q8WDc51z/mdCmkFnQLrxZOMvRDQ8vbI8J7fMtPG/LmjmiXYK8bOf71pDwn3qYPFsf96Jg2wgAcJ2fPQt8apllCULzl0gZ0xOlC6zgEkCXCb/LLpBS+ud/C4t0Ureq/k="
   email: false
