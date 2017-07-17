@@ -35,7 +35,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     keywords='linear algebra, vector, plane, math',
     url='https://github.com/aranzgeo/vectormath',
-    download_url='http://github.com/aranzgeo/vectormath',
+    download_url='https://github.com/aranzgeo/vectormath',
     classifiers=CLASSIFIERS,
     platforms=['Windows', 'Linux', 'Solaris', 'Mac OS-X', 'Unix'],
     license='MIT License',
