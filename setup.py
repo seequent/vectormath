@@ -24,7 +24,7 @@ with open('README.rst') as f:
 
 setup(
     name='vectormath',
-    version='0.1.2',
+    version='0.1.3',
     packages=find_packages(),
     install_requires=[
         'numpy>=1.7',
@@ -35,9 +35,10 @@ setup(
     long_description=LONG_DESCRIPTION,
     keywords='linear algebra, vector, plane, math',
     url='https://github.com/aranzgeo/vectormath',
-    download_url='http://github.com/aranzgeo/vectormath',
+    download_url='https://github.com/aranzgeo/vectormath',
     classifiers=CLASSIFIERS,
     platforms=['Windows', 'Linux', 'Solaris', 'Mac OS-X', 'Unix'],
     license='MIT License',
+    include_package_data=True,
     use_2to3=False,
 )
