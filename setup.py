@@ -39,5 +39,6 @@ setup(
     classifiers=CLASSIFIERS,
     platforms=['Windows', 'Linux', 'Solaris', 'Mac OS-X', 'Unix'],
     license='MIT License',
+    include_package_data=True,
     use_2to3=False,
 )
