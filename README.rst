@@ -3,7 +3,7 @@ vectormath
 
 
 .. image:: https://img.shields.io/pypi/v/vectormath.svg
-    :target: https://pypi.python.org/pypi/vectormath
+    :target: https://pypi.org/project/vectormath
     :alt: Latest PyPI version
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
