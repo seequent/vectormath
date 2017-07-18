@@ -24,7 +24,7 @@ with open('README.rst') as f:
 
 setup(
     name='vectormath',
-    version='0.1.3',
+    version='0.1.4',
     packages=find_packages(),
     install_requires=[
         'numpy>=1.7',
