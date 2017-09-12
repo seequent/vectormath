@@ -120,7 +120,7 @@ class Vector3(BaseVector):
 
         return read_array(x, y, z)
 
-    def __array_wrap__(self, out_arr, context=None):
+    def __array_wrap__(self, out_arr, context=None):                           #pylint: disable=no-self-use, unused-argument
         """This is called at the end of ufuncs
 
         If the output is the wrong shape, return the ndarray view
@@ -188,7 +188,7 @@ class Vector2(BaseVector):
 
         return read_array(x, y)
 
-    def __array_wrap__(self, out_arr, context=None):
+    def __array_wrap__(self, out_arr, context=None):                           #pylint: disable=no-self-use, unused-argument
         if out_arr.shape != (2,):
             out_arr = out_arr.view(np.ndarray)
         return out_arr
@@ -338,7 +338,7 @@ class Vector3Array(BaseVectorArray):
 
         return read_array(x, y, z)
 
-    def __array_wrap__(self, out_arr, context=None):
+    def __array_wrap__(self, out_arr, context=None):                           #pylint: disable=no-self-use, unused-argument
         if len(out_arr.shape) != 2 or out_arr.shape[1] != 3:
             out_arr = out_arr.view(np.ndarray)
         return out_arr
@@ -436,7 +436,7 @@ class Vector2Array(BaseVectorArray):
 
         return read_array(x, y)
 
-    def __array_wrap__(self, out_arr, context=None):
+    def __array_wrap__(self, out_arr, context=None):                           #pylint: disable=no-self-use, unused-argument
         if len(out_arr.shape) != 2 or out_arr.shape[1] != 2:
             out_arr = out_arr.view(np.ndarray)
         return out_arr
