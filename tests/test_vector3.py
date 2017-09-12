@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import unittest
 import numpy as np
 
-from vectormath import Vector3, Vector3Array
+from vectormath import Vector2, Vector2Array, Vector3, Vector3Array
 
 
 class TestVMathVector3(unittest.TestCase):
@@ -331,6 +331,40 @@ class TestVMathVector3(unittest.TestCase):
         self.assertTrue(isinstance(v1[4, :], np.ndarray))
         self.assertTrue(isinstance(v1.x, np.ndarray))
         self.assertTrue(isinstance(v1[1:30, :], np.ndarray))
+
+        a1 = np.array([1., 2.])
+        with self.assertRaises(ValueError):
+            a1.view(Vector3)
+        with self.assertRaises(ValueError):
+            a1.view(Vector3Array)
+        a1 = np.array([1., 2., 3.])
+        self.assertTrue(isinstance(a1.view(Vector3), Vector3))
+        with self.assertRaises(ValueError):
+            a1.view(Vector3Array)
+        a1 = np.array([[1., 2., 3.]])
+        with self.assertRaises(ValueError):
+            a1.view(Vector3)
+        self.assertTrue(isinstance(a1.view(Vector3Array), Vector3Array))
+
+        self.assertTrue(isinstance(v1.view(Vector3Array), Vector3Array))
+        with self.assertRaises(ValueError):
+            v1.view(Vector2Array)
+        with self.assertRaises(ValueError):
+            v1.view(Vector3)
+        with self.assertRaises(ValueError):
+            v1.view(Vector2)
+        v1 = Vector3([1., 2., 3.])
+        with self.assertRaises(ValueError):
+            v1.view(Vector3Array)
+        with self.assertRaises(ValueError):
+            v1.view(Vector2Array)
+        with self.assertRaises(ValueError):
+            v1.view(Vector2)
+        self.assertTrue(isinstance(v1.view(Vector3), Vector3))
+
+        v1 = np.kron(Vector3([1., 0., 0.]), np.atleast_2d(np.ones(10)).T)
+        self.assertFalse(isinstance(v1, Vector3))
+
 
     # def test_mult_warning(self):
     #     with warnings.catch_warnings(record=True) as w:

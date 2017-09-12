@@ -14,16 +14,6 @@ class BaseVector(np.ndarray):
         """BaseVector cannot be created"""
         raise NotImplementedError('Please specify Vector2 or Vector3')
 
-    def __array_finalize__(self, obj):                                         #pylint: disable=no-self-use
-        """This is called at the end of array creation
-
-        obj depends on the context. Currently, this does not need to do
-        anything regardless of context. See `subclassing docs
-        <https://docs.scipy.org/numpy/user/basics.subclassing.html>`_.
-        """
-        if obj is None:
-            return
-
     @property
     def x(self):
         """x-component of vector"""
@@ -130,6 +120,33 @@ class Vector3(BaseVector):
 
         return read_array(x, y, z)
 
+    def __array_wrap__(self, out_arr, context=None):
+        """This is called at the end of ufuncs
+
+        If the output is the wrong shape, return the ndarray view
+        instead of vector view
+        """
+        if out_arr.shape != (3,):
+            out_arr = out_arr.view(np.ndarray)
+        return out_arr
+
+    def __array_finalize__(self, obj):
+        """This is called when initializing the vector
+
+        If the constructor is used, obj is None. If slicing is
+        used, obj has the same class as self. In both these cases,
+        we let things pass.
+
+        If we are viewing another array class as a vector, then obj has
+        a different class than self. In this case, if the array has
+        an invalid shape a ValueError is raised
+        """
+        if obj is None or obj.__class__ is Vector3:
+            return
+        if self.shape != (3,):
+            raise ValueError('Invalid array to view as Vector3 - must be '
+                             'length-3 array')
+
     @property
     def z(self):
         """z-component of vector"""
@@ -170,6 +187,18 @@ class Vector2(BaseVector):
                              'nothing for [0., 0.]')
 
         return read_array(x, y)
+
+    def __array_wrap__(self, out_arr, context=None):
+        if out_arr.shape != (2,):
+            out_arr = out_arr.view(np.ndarray)
+        return out_arr
+
+    def __array_finalize__(self, obj):
+        if obj is None or obj.__class__ is Vector2:
+            return
+        if self.shape != (2,):
+            raise ValueError('Invalid array to view as Vector2 - must be '
+                             'length-2 array')
 
 
 class BaseVectorArray(BaseVector):
@@ -309,6 +338,18 @@ class Vector3Array(BaseVectorArray):
 
         return read_array(x, y, z)
 
+    def __array_wrap__(self, out_arr, context=None):
+        if len(out_arr.shape) != 2 or out_arr.shape[1] != 3:
+            out_arr = out_arr.view(np.ndarray)
+        return out_arr
+
+    def __array_finalize__(self, obj):
+        if obj is None or obj.__class__ is Vector3Array:
+            return
+        if len(self.shape) != 2 or self.shape[1] != 3:
+            raise ValueError('Invalid array to view as Vector3Array - must be '
+                             'array of shape (*, 3)')
+
     def __getitem__(self, i):
         """Overriding _getitem__ allows coersion to Vector3 or ndarray"""
         item_out = super(Vector3Array, self).__getitem__(i)
@@ -394,6 +435,18 @@ class Vector2Array(BaseVectorArray):
             return np.asarray(vec_ndarray).view(cls)
 
         return read_array(x, y)
+
+    def __array_wrap__(self, out_arr, context=None):
+        if len(out_arr.shape) != 2 or out_arr.shape[1] != 2:
+            out_arr = out_arr.view(np.ndarray)
+        return out_arr
+
+    def __array_finalize__(self, obj):
+        if obj is None or obj.__class__ is Vector2Array:
+            return
+        if len(self.shape) != 2 or self.shape[1] != 2:
+            raise ValueError('Invalid array to view as Vector2Array - must be '
+                             'array of shape (*, 2)')
 
     def __getitem__(self, i):
         """Overriding _getitem__ allows coercion to Vector2 or ndarray"""
