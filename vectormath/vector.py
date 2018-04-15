@@ -144,8 +144,11 @@ class Vector3(BaseVector):
         if obj is None or obj.__class__ is Vector3:
             return
         if self.shape != (3,):
-            raise ValueError('Invalid array to view as Vector3 - must be '
-                             'length-3 array')
+            raise ValueError(
+                'Invalid array to view as Vector3 - must be length-3 array.'
+                '\n\nConsider viewing your Vector3 as an ndarray before '
+                'performing this operation.'
+            )
 
     @property
     def z(self):
@@ -197,8 +200,11 @@ class Vector2(BaseVector):
         if obj is None or obj.__class__ is Vector2:
             return
         if self.shape != (2,):
-            raise ValueError('Invalid array to view as Vector2 - must be '
-                             'length-2 array')
+            raise ValueError(
+                'Invalid array to view as Vector2 - must be length-2 array.'
+                '\n\nConsider viewing your Vector2 as an ndarray before '
+                'performing this operation.'
+            )
 
 
 class BaseVectorArray(BaseVector):
@@ -347,8 +353,12 @@ class Vector3Array(BaseVectorArray):
         if obj is None or obj.__class__ is Vector3Array:
             return
         if len(self.shape) != 2 or self.shape[1] != 3:
-            raise ValueError('Invalid array to view as Vector3Array - must be '
-                             'array of shape (*, 3)')
+            raise ValueError(
+                'Invalid array to view as Vector3Array - must be '
+                'array of shape (*, 3).'
+                '\n\nConsider viewing your Vector3Array as an ndarray before '
+                'performing this operation.'
+            )
 
     def __getitem__(self, i):
         """Overriding _getitem__ allows coersion to Vector3 or ndarray"""
@@ -445,8 +455,12 @@ class Vector2Array(BaseVectorArray):
         if obj is None or obj.__class__ is Vector2Array:
             return
         if len(self.shape) != 2 or self.shape[1] != 2:
-            raise ValueError('Invalid array to view as Vector2Array - must be '
-                             'array of shape (*, 2)')
+            raise ValueError(
+                'Invalid array to view as Vector2Array - must be '
+                'array of shape (*, 2).'
+                '\n\nConsider viewing your Vector2Array as an ndarray before '
+                'performing this operation.'
+            )
 
     def __getitem__(self, i):
         """Overriding _getitem__ allows coercion to Vector2 or ndarray"""
