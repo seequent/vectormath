@@ -7,6 +7,6 @@ from __future__ import unicode_literals
 from .vector import Vector3, Vector2, Vector3Array, Vector2Array
 
 __version__ = '0.1.4'
-__author__ = 'ARANZ Geo Limited'
+__author__ = 'Seequent'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2017 ARANZ Geo Limited'
+__copyright__ = 'Copyright 2018 Seequent'
