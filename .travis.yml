@@ -7,10 +7,6 @@ python:
 
 sudo: false
 
-matrix:
-  allow_failures:
-    - python: 3.6
-
 addons:
   apt:
     packages:
