@@ -309,6 +309,15 @@ class TestVMathVector2(unittest.TestCase):
         self.assertTrue(isinstance(v1.x, np.ndarray))
         self.assertTrue(isinstance(v1[1:30, :], np.ndarray))
 
+    def test_cross(self):
+        vector2 = Vector2(5, 0)
+        vector2_2 = Vector2(1, 0)
+        crossResult = vector2.cross(vector2_2)
+        self.assertEqual(crossResult[0], 0)
+        self.assertEqual(crossResult[1], 0)
+        self.assertEqual(crossResult[2], 0)
+        with self.assertRaises(TypeError):
+            dotResult2 = vector2.cross("Banana")
 
 if __name__ == '__main__':
     unittest.main()
