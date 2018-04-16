@@ -202,6 +202,12 @@ class Vector2(BaseVector):
                 'Invalid array to view as Vector2 - must be length-2 array.'
             )
 
+    def cross(self, vec):
+        """Cross product with another vector"""
+        if not isinstance(vec, self.__class__):
+            raise TypeError('Cross product operand must be a vector')
+        return Vector3(0, 0, np.asscalar(np.cross(self, vec)))
+
 
 class BaseVectorArray(BaseVector):
     """Class to contain basic operations used by all VectorArray classes"""

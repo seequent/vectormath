@@ -342,5 +342,15 @@ class TestVMathVector2(unittest.TestCase):
         v1 = np.kron(Vector2([1., 0.]), np.atleast_2d(np.ones(10)).T)
         self.assertFalse(isinstance(v1, Vector2))
 
+    def test_cross(self):
+        vector2 = Vector2(5, 0)
+        vector2_2 = Vector2(1, 0)
+        crossResult = vector2.cross(vector2_2)
+        self.assertEqual(crossResult[0], 0)
+        self.assertEqual(crossResult[1], 0)
+        self.assertEqual(crossResult[2], 0)
+        with self.assertRaises(TypeError):
+            dotResult2 = vector2.cross("Banana")
+
 if __name__ == '__main__':
     unittest.main()

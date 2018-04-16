@@ -34,7 +34,6 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'pyexec'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -53,8 +52,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'vectormath'
-copyright = u'2017, ARANZ Geo Limited'
-author = u'ARANZ Geo Limited'
+copyright = u'2018, Seequent'
+author = u'Seequent'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -238,7 +237,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'vectormath.tex', u'vectormath Documentation',
-     u'ARANZ Geo Limited', 'manual'),
+     u'Seequent', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
