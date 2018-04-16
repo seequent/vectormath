@@ -7,15 +7,15 @@ vectormath
     :alt: Latest PyPI version
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: https://github.com/aranzgeo/vectormath/blob/master/LICENSE
+    :target: https://github.com/seequent/vectormath/blob/master/LICENSE
     :alt: MIT license
 
-.. image:: https://api.travis-ci.org/aranzgeo/vectormath.svg?branch=master
-    :target: https://travis-ci.org/aranzgeo/vectormath
+.. image:: https://api.travis-ci.org/seequent/vectormath.svg?branch=master
+    :target: https://travis-ci.org/seequent/vectormath
     :alt: Travis CI build status
 
-.. image:: https://codecov.io/gh/aranzgeo/vectormath/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/aranzgeo/vectormath
+.. image:: https://codecov.io/gh/seequent/vectormath/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/seequent/vectormath
     :alt: Code test coverage
 
 
@@ -59,7 +59,7 @@ Alternatives
 Connections
 -----------
 
-* `properties <https://github.com/aranzgeo/properties>`_ uses :code:`vectormath`
+* `properties <https://github.com/seequent/properties>`_ uses :code:`vectormath`
   as the underlying framework for Vector properties.
 
 Installation
@@ -76,7 +76,7 @@ For the development version:
 
 .. code::
 
-    git clone https://github.com/aranzgeo/vectormath.git
+    git clone https://github.com/seequent/vectormath.git
     cd vectormath
     pip install -e .
 
@@ -113,4 +113,4 @@ This example gives a brief demonstration of some of the notable features of
     print(type(v_array[1:, 1:]))      # >> numpy.ndarray
 
 
-Current version: v0.1.4
+Current version: v0.2.0
