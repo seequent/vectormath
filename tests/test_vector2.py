@@ -352,5 +352,31 @@ class TestVMathVector2(unittest.TestCase):
         with self.assertRaises(TypeError):
             dotResult2 = vector2.cross("Banana")
 
+    def test_angle(self):
+
+        # test a unit vector along each coordinate
+        v1 = Vector2(1, 0)  # x-coordinate, use this as datum
+        v = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1)]
+        angles_deg = [0, 90, 180, 90]
+        angles_rad = [0, np.pi / 2, np.pi, np.pi / 2]
+        for k in range(4):
+            a_deg = v1.angle(v[k], unit='deg')
+            a_rad0 = v1.angle(v[k], unit='rad')
+            a_rad1 = v1.angle(v[k])
+            self.assertEqual(a_deg, angles_deg[k])
+            self.assertEqual(a_rad0, angles_rad[k])
+            self.assertEqual(a_rad1, angles_rad[k])
+
+            # verify the associative property
+            self.assertEqual(v1.angle(v[k]), v[k].angle(v1))
+
+        with self.assertRaises(TypeError):
+            angleResult = v1.angle('anything but Vector2')
+        with self.assertRaises(ValueError):
+            angleResult = v1.angle(v[0], unit='invalid entry')
+        with self.assertRaises(ZeroDivisionError):
+            angleResult = v1.angle(Vector2(0, 0))
+
+
 if __name__ == '__main__':
     unittest.main()
