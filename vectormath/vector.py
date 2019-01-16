@@ -85,6 +85,27 @@ class BaseVector(np.ndarray):
             raise TypeError('Cross product operand must be a vector')
         return self.__class__(np.cross(self, vec))
 
+    def angle(self, vec, unit='rad'):
+        """Calculate the angle between two Vectors
+
+        unit: unit for returned angle, either 'rad' or 'deg'. Defaults to 'rad'
+        """
+        if not isinstance(vec, self.__class__):
+            raise TypeError('Angle operand must be of class {}'
+                            .format(self.__class__.__name__))
+        if unit not in ['deg', 'rad']:
+            raise ValueError('Only units of rad or deg are supported')
+
+        denom = self.length * vec.length
+        if denom == 0:
+            raise ZeroDivisionError('Cannot calculate angle between '
+                                    'zero-length vector(s)')
+
+        ang = np.arccos(self.dot(vec) / denom)
+        if unit == 'deg':
+            ang = ang * 180 / np.pi
+        return ang
+
     def __mul__(self, multiplier):
         return self.__class__(self.view(np.ndarray) * multiplier)
 
@@ -288,6 +309,10 @@ class BaseVectorArray(BaseVector):
             raise ValueError('Dot product operands must have the same '
                              'number of elements.')
         return np.sum((getattr(self, d)*getattr(vec, d) for d in self.dims), 1)
+
+    def angle(self, vec, unit='rad'):
+        """Angle method is only for Vectors, not VectorArrays"""
+        raise NotImplementedError('angle not implemented for VectorArrays')
 
 
 class Vector3Array(BaseVectorArray):
