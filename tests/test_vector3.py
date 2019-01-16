@@ -365,6 +365,31 @@ class TestVMathVector3(unittest.TestCase):
         v1 = np.kron(Vector3([1., 0., 0.]), np.atleast_2d(np.ones(10)).T)
         self.assertFalse(isinstance(v1, Vector3))
 
+    def test_angle(self):
+
+        # test a unit vector along each coordinate
+        v1 = Vector3(1, 0, 0)  # x-axis, use this as datum
+        v = [Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1),
+             Vector3(-1, 0, 0), Vector3(0, -1, 0), Vector3(0, 0, -1)]
+        angles_deg = [0, 90, 90, 180, 90, 90]
+        angles_rad = [0, np.pi / 2, np.pi / 2, np.pi, np.pi / 2, np.pi / 2]
+        for k in range(6):
+            a_deg = v1.angle(v[k], unit='deg')
+            a_rad0 = v1.angle(v[k], unit='rad')
+            a_rad1 = v1.angle(v[k])
+            self.assertEqual(a_deg, angles_deg[k])
+            self.assertEqual(a_rad0, angles_rad[k])
+            self.assertEqual(a_rad1, angles_rad[k])
+
+            # verify the associative property
+            self.assertEqual(v1.angle(v[k]), v[k].angle(v1))
+
+        with self.assertRaises(TypeError):
+            angleResult = v1.angle('anything but Vector3')
+        with self.assertRaises(ValueError):
+            angleResult = v1.angle(v[0], unit='invalid entry')
+        with self.assertRaises(ZeroDivisionError):
+            angleResult = v1.angle(Vector3(0, 0, 0))
 
     # def test_mult_warning(self):
     #     with warnings.catch_warnings(record=True) as w:
