@@ -318,7 +318,7 @@ class Vector3Array(BaseVectorArray):
                 if X.size == 3:
                     X = X.flatten()
                     return cls(X[0], X[1], X[2])
-                elif len(X.shape) == 2 and X.shape[1] == 3:
+                if len(X.shape) == 2 and X.shape[1] == 3:
                     return cls(
                         X[:, 0].copy(), X[:, 1].copy(), X[:, 2].copy()
                     )
@@ -354,7 +354,7 @@ class Vector3Array(BaseVectorArray):
     def __array_finalize__(self, obj):
         if obj is None or obj.__class__ is Vector3Array:
             return
-        if len(self.shape) != 2 or self.shape[1] != 3:
+        if len(self.shape) != 2 or self.shape[1] != 3:                         #pylint: disable=unsubscriptable-object
             raise ValueError(
                 'Invalid array to view as Vector3Array - must be '
                 'array of shape (*, 3).'
@@ -418,7 +418,7 @@ class Vector2Array(BaseVectorArray):
                 if X.size == 2:
                     X = X.flatten()
                     return cls(X[0], X[1])
-                elif len(X.shape) == 2 and X.shape[1] == 2:
+                if len(X.shape) == 2 and X.shape[1] == 2:
                     return cls(
                         X[:, 0].copy(), X[:, 1].copy()
                     )
@@ -454,7 +454,7 @@ class Vector2Array(BaseVectorArray):
     def __array_finalize__(self, obj):
         if obj is None or obj.__class__ is Vector2Array:
             return
-        if len(self.shape) != 2 or self.shape[1] != 2:
+        if len(self.shape) != 2 or self.shape[1] != 2:                         #pylint: disable=unsubscriptable-object
             raise ValueError(
                 'Invalid array to view as Vector2Array - must be '
                 'array of shape (*, 2).'
