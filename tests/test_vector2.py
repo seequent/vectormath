@@ -378,6 +378,7 @@ class TestVMathVector2(unittest.TestCase):
             angleResult = v1.angle(Vector2(0, 0))
 
     def test_polar(self):
+        # polar <-> cartesian conversions
         cases = [
             # ((rho, theta), (x, y))
             ((1, 0), (1, 0)),
@@ -395,6 +396,24 @@ class TestVMathVector2(unittest.TestCase):
             v = Vector2(x, y)
             self.assertAlmostEqual(v.rho, rho)
             self.assertAlmostEqual(v.theta, theta)
+
+        # degrees -> radians
+        cases = [
+            # (degrees, radians)
+            (0, 0),
+            (90, np.pi/2),
+            (-90, -np.pi/2),
+            (45, np.pi/4),
+            (180, np.pi),
+        ]
+        for deg, rad in cases:
+            v = Vector2(1, deg, polar=True, unit='deg')
+            self.assertAlmostEqual(v.theta, rad)
+            self.assertAlmostEqual(v.theta_deg, deg)
+
+        # faulty input
+        with self.assertRaises(ValueError):
+            Vector2(1, np.pi, polar=True, unit='invalid_unit')
 
 
 if __name__ == '__main__':

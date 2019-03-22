@@ -202,6 +202,8 @@ class Vector2(BaseVector):
                 return cls(0, 0, polar, unit)
             if np.isscalar(X) and np.isscalar(Y):
                 if polar:
+                    if unit not in ['deg', 'rad']:
+                        raise ValueError('Only units of rad or deg are supported')
                     if unit == 'deg':
                         Y = Y / 180 * np.pi
                     X, Y = X * np.cos(Y), X * np.sin(Y)
@@ -233,12 +235,14 @@ class Vector2(BaseVector):
         return self.length
 
     @property
-    def theta(self, unit='rad'):
-        """Angular coordinate of this vector in polar coordinates"""
-        theta = float(np.arctan2(self.y, self.x))
-        if unit == 'deg':
-            theta = theta * 180 / np.pi
-        return theta
+    def theta(self):
+        """Angular coordinate (in radians) of this vector in polar coordinates"""
+        return float(np.arctan2(self.y, self.x))
+
+    @property
+    def theta_deg(self):
+        """Angular coordinate (in degrees) of this vector in polar coordinates"""
+        return float(np.arctan2(self.y, self.x)) * 180 / np.pi
 
     def cross(self, vec):
         """Cross product with another vector"""
