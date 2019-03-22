@@ -377,6 +377,25 @@ class TestVMathVector2(unittest.TestCase):
         with self.assertRaises(ZeroDivisionError):
             angleResult = v1.angle(Vector2(0, 0))
 
+    def test_polar(self):
+        cases = [
+            # ((rho, theta), (x, y))
+            ((1, 0), (1, 0)),
+            ((1, np.pi), (-1, 0)),
+            ((2, -np.pi / 2), (0, -2)),
+            ((1, np.pi * 3 / 4), (-1 / np.sqrt(2), 1 / np.sqrt(2))),
+            ((3, np.pi / 4), (3 / np.sqrt(2), 3 / np.sqrt(2))),
+        ]
+        for polar, cartesian in cases:
+            rho, theta = polar
+            x, y = cartesian
+            v = Vector2(rho, theta, polar=True)
+            self.assertAlmostEqual(v.x, x)
+            self.assertAlmostEqual(v.y, y)
+            v = Vector2(x, y)
+            self.assertAlmostEqual(v.rho, rho)
+            self.assertAlmostEqual(v.theta, theta)
+
 
 if __name__ == '__main__':
     unittest.main()

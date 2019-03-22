@@ -189,18 +189,22 @@ class Vector2(BaseVector):
         - no input (returns [0., 0.])
     """
 
-    def __new__(cls, x=None, y=None):                                          #pylint: disable=arguments-differ
+    def __new__(cls, x=None, y=None, polar=False, unit='rad'):                 #pylint: disable=arguments-differ
 
         def read_array(X, Y):
             """Build Vector2 from another Vector2, [x, y], or x/y"""
             if isinstance(X, cls) and Y is None:
-                return cls(X.x, X.y)
+                return cls(X.x, X.y, polar, unit)
             if (isinstance(X, (list, tuple, np.ndarray)) and len(X) == 2 and
                     Y is None):
-                return cls(X[0], X[1])
+                return cls(X[0], X[1], polar, unit)
             if X is None and Y is None:
-                return cls(0, 0)
+                return cls(0, 0, polar, unit)
             if np.isscalar(X) and np.isscalar(Y):
+                if polar:
+                    if unit == 'deg':
+                        Y = Y / 180 * np.pi
+                    X, Y = X * np.cos(Y), X * np.sin(Y)
                 xyz = np.r_[X, Y]
                 xyz = xyz.astype(float)
                 return xyz.view(cls)
@@ -222,6 +226,19 @@ class Vector2(BaseVector):
             raise ValueError(
                 'Invalid array to view as Vector2 - must be length-2 array.'
             )
+
+    @property
+    def rho(self):
+        """Radial coordinate of this vector in polar coordinates"""
+        return self.length
+
+    @property
+    def theta(self, unit='rad'):
+        """Angular coordinate of this vector in polar coordinates"""
+        theta = float(np.arctan2(self.y, self.x))
+        if unit == 'deg':
+            theta = theta * 180 / np.pi
+        return theta
 
     def cross(self, vec):
         """Cross product with another vector"""
