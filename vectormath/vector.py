@@ -50,6 +50,38 @@ class BaseVector(np.ndarray):
             raise ZeroDivisionError('Cannot resize vector of length 0 to '
                                     'nonzero length')
 
+    @property
+    def rho(self):
+        """Radial coordinate of this vector (equal to the length of the vector)"""
+        return self.length
+
+    @rho.setter
+    def rho(self, value):
+        self.length = value
+
+    @property
+    def theta(self):
+        """
+        Angular coordinate / azimuthal angle (in radians) of this vector
+        in polar coordinates (or sperical coordinates for `Vector3`)
+        i.e. the angle between this vector and the positive x-axis (-pi <= theta <= pi)
+        """
+        return float(np.arctan2(self.y, self.x))
+
+    # TODO: Add `theta` and `theta_deg` setters
+    # @theta.setter
+    # def theta(self, value):
+    #     ...
+
+    @property
+    def theta_deg(self):
+        """
+        Angular coordinate / azimuthal angle (in degrees) of this vector
+        in polar coordinates (or sperical coordinates for `Vector3`)
+        i.e. the angle between this vector and the positive x-axis (-180 <= theta_deg <= 180)
+        """
+        return self.theta * 180 / np.pi
+
     def as_length(self, value):
         """Return a new vector scaled to given length"""
         new_vec = self.copy()
@@ -120,6 +152,7 @@ class Vector3(BaseVector):
         - no input (returns [0., 0., 0.])
     """
 
+    # TODO: add support for instantiating Vector3 with `polar`=True
     def __new__(cls, x=None, y=None, z=None):                                  #pylint: disable=arguments-differ
 
         def read_array(X, Y, Z):
@@ -178,6 +211,27 @@ class Vector3(BaseVector):
     def z(self, value):
         self[2] = value
 
+    @property
+    def phi(self):
+        """
+        Polar angle / inclination (in radians) of this vector in sperical coordinates
+        i.e. the angle between this vector and the positive z-azis (0 <= phi <= pi)
+        """
+        return np.arctan2(np.sqrt(self.x**2 + self.y**2), self.z)
+
+    # TODO: Add `phi` and `phi_deg` setters
+    # @phi.setter
+    # def phi(self, value):
+    #     ...
+
+    @property
+    def phi_deg(self):
+        """
+        Polar angle / inclination (in degrees) of this vector in sperical coordinates
+        i.e. the angle between this vector and the positive z-axis (0 <= phi_deg <= 180)
+        """
+        return self.phi * 180 / np.pi
+
 
 class Vector2(BaseVector):
     """Primitive 2D vector defined from the origin
@@ -186,6 +240,7 @@ class Vector2(BaseVector):
         - another Vector2
         - length-2 array
         - x and y values
+        - rho and theta, if polar=True; specify unit as 'rad' (default) or 'deg'
         - no input (returns [0., 0.])
     """
 
@@ -194,7 +249,9 @@ class Vector2(BaseVector):
         def read_array(X, Y):
             """Build Vector2 from another Vector2, [x, y], or x/y"""
             if isinstance(X, cls) and Y is None:
-                return cls(X.x, X.y, polar, unit)
+                if polar:
+                    raise ValueError('When copying a Vector2, polar=True is not supported')
+                return cls(X.x, X.y)
             if (isinstance(X, (list, tuple, np.ndarray)) and len(X) == 2 and
                     Y is None):
                 return cls(X[0], X[1], polar, unit)
@@ -228,21 +285,6 @@ class Vector2(BaseVector):
             raise ValueError(
                 'Invalid array to view as Vector2 - must be length-2 array.'
             )
-
-    @property
-    def rho(self):
-        """Radial coordinate of this vector in polar coordinates"""
-        return self.length
-
-    @property
-    def theta(self):
-        """Angular coordinate (in radians) of this vector in polar coordinates"""
-        return float(np.arctan2(self.y, self.x))
-
-    @property
-    def theta_deg(self):
-        """Angular coordinate (in degrees) of this vector in polar coordinates"""
-        return float(np.arctan2(self.y, self.x)) * 180 / np.pi
 
     def cross(self, vec):
         """Cross product with another vector"""

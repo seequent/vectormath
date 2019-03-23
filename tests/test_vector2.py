@@ -414,6 +414,26 @@ class TestVMathVector2(unittest.TestCase):
         # faulty input
         with self.assertRaises(ValueError):
             Vector2(1, np.pi, polar=True, unit='invalid_unit')
+        with self.assertRaises(ValueError):
+            v = Vector2(1, np.pi, polar=True)
+            # copying doesn't support polar=True
+            Vector2(v, polar=True)
+
+    def test_spherical(self):
+        # cartesian -> sperical conversions
+        cases = [
+            # ((x, y, z), (rho, theta, phi))
+            ((1, 0, 0), (1, 0, np.pi/2)),
+            ((1, 0, 1), (np.sqrt(2), 0, np.pi/4)),
+            ((1, 0, -1), (np.sqrt(2), 0, np.pi/4*3)),
+        ]
+        for cartesian, sperical in cases:
+            rho, theta, phi = sperical
+            x, y, z = cartesian
+            v = Vector3(x, y, z)
+            self.assertAlmostEqual(v.rho, rho)
+            self.assertAlmostEqual(v.theta, theta)
+            self.assertAlmostEqual(v.phi, phi)
 
 
 if __name__ == '__main__':
