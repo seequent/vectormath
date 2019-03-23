@@ -68,6 +68,7 @@ class BaseVector(np.ndarray):
         """
         return float(np.arctan2(self.y, self.x))
 
+    # pylint: disable=fixme
     # TODO: Add `theta` and `theta_deg` setters
     # @theta.setter
     # def theta(self, value):
@@ -152,7 +153,9 @@ class Vector3(BaseVector):
         - no input (returns [0., 0., 0.])
     """
 
+    # pylint: disable=fixme
     # TODO: add support for instantiating Vector3 with `polar`=True
+
     def __new__(cls, x=None, y=None, z=None):                                  #pylint: disable=arguments-differ
 
         def read_array(X, Y, Z):
@@ -219,6 +222,7 @@ class Vector3(BaseVector):
         """
         return np.arctan2(np.sqrt(self.x**2 + self.y**2), self.z)
 
+    # pylint: disable=fixme
     # TODO: Add `phi` and `phi_deg` setters
     # @phi.setter
     # def phi(self, value):
