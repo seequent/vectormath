@@ -62,9 +62,11 @@ class BaseVector(np.ndarray):
     @property
     def theta(self):
         """
-        Angular coordinate / azimuthal angle (in radians) of this vector
-        in polar coordinates (or sperical coordinates for `Vector3`)
-        i.e. the angle between this vector and the positive x-axis (-pi <= theta <= pi)
+        Angular coordinate / azimuthal angle of this vector in radians
+
+        Based on polar coordinate space (or sperical coordinate space for `Vector3`)
+        returns angle between this vector and the positive x-axis
+        range: (-pi <= theta <= pi)
         """
         return float(np.arctan2(self.y, self.x))
 
@@ -77,9 +79,11 @@ class BaseVector(np.ndarray):
     @property
     def theta_deg(self):
         """
-        Angular coordinate / azimuthal angle (in degrees) of this vector
-        in polar coordinates (or sperical coordinates for `Vector3`)
-        i.e. the angle between this vector and the positive x-axis (-180 <= theta_deg <= 180)
+        Angular coordinate / azimuthal angle of this vector in degrees
+
+        Based on polar coordinate space (or sperical coordinate space for `Vector3`)
+        returns angle between this vector and the positive x-axis
+        range: (-180 <= theta_deg <= 180)
         """
         return self.theta * 180 / np.pi
 
@@ -217,8 +221,11 @@ class Vector3(BaseVector):
     @property
     def phi(self):
         """
-        Polar angle / inclination (in radians) of this vector in sperical coordinates
-        i.e. the angle between this vector and the positive z-azis (0 <= phi <= pi)
+        Polar angle / inclination of this vector in radians
+
+        Based on sperical coordinate space
+        returns angle between this vector and the positive z-azis
+        range: (0 <= phi <= pi)
         """
         return np.arctan2(np.sqrt(self.x**2 + self.y**2), self.z)
 
@@ -231,8 +238,11 @@ class Vector3(BaseVector):
     @property
     def phi_deg(self):
         """
-        Polar angle / inclination (in degrees) of this vector in sperical coordinates
-        i.e. the angle between this vector and the positive z-axis (0 <= phi_deg <= 180)
+        Polar angle / inclination of this vector in degrees
+
+        Based on sperical coordinate space
+        returns angle between this vector and the positive z-azis
+        range: (0 <= phi <= pi)
         """
         return self.phi * 180 / np.pi
 
