@@ -50,6 +50,41 @@ class BaseVector(np.ndarray):
             raise ZeroDivisionError('Cannot resize vector of length 0 to '
                                     'nonzero length')
 
+    @property
+    def rho(self):
+        """Radial coordinate of this vector (equal to the length of the vector)"""
+        return self.length
+
+    @rho.setter
+    def rho(self, value):
+        self.length = value
+
+    @property
+    def theta(self):
+        """Angular coordinate / azimuthal angle of this vector in radians
+
+        Based on polar coordinate space (or sperical coordinate space for `Vector3`)
+        returns angle between this vector and the positive x-axis
+        range: (-pi <= theta <= pi)
+        """
+        return float(np.arctan2(self.y, self.x))
+
+    # pylint: disable=fixme
+    # TODO: Add `theta` and `theta_deg` setters
+    # @theta.setter
+    # def theta(self, value):
+    #     ...
+
+    @property
+    def theta_deg(self):
+        """Angular coordinate / azimuthal angle of this vector in degrees
+
+        Based on polar coordinate space (or sperical coordinate space for `Vector3`)
+        returns angle between this vector and the positive x-axis
+        range: (-180 <= theta_deg <= 180)
+        """
+        return self.theta * 180 / np.pi
+
     def as_length(self, value):
         """Return a new vector scaled to given length"""
         new_vec = self.copy()
@@ -120,6 +155,9 @@ class Vector3(BaseVector):
         - no input (returns [0., 0., 0.])
     """
 
+    # pylint: disable=fixme
+    # TODO: add support for instantiating Vector3 with `polar`=True
+
     def __new__(cls, x=None, y=None, z=None):                                  #pylint: disable=arguments-differ
 
         def read_array(X, Y, Z):
@@ -178,6 +216,32 @@ class Vector3(BaseVector):
     def z(self, value):
         self[2] = value
 
+    @property
+    def phi(self):
+        """Polar angle / inclination of this vector in radians
+
+        Based on sperical coordinate space
+        returns angle between this vector and the positive z-azis
+        range: (0 <= phi <= pi)
+        """
+        return np.arctan2(np.sqrt(self.x**2 + self.y**2), self.z)
+
+    # pylint: disable=fixme
+    # TODO: Add `phi` and `phi_deg` setters
+    # @phi.setter
+    # def phi(self, value):
+    #     ...
+
+    @property
+    def phi_deg(self):
+        """Polar angle / inclination of this vector in degrees
+
+        Based on sperical coordinate space
+        returns angle between this vector and the positive z-azis
+        range: (0 <= phi <= pi)
+        """
+        return self.phi * 180 / np.pi
+
 
 class Vector2(BaseVector):
     """Primitive 2D vector defined from the origin
@@ -186,21 +250,34 @@ class Vector2(BaseVector):
         - another Vector2
         - length-2 array
         - x and y values
+        - rho and theta, if polar=True; specify unit as 'rad' (default) or 'deg'
         - no input (returns [0., 0.])
     """
 
-    def __new__(cls, x=None, y=None):                                          #pylint: disable=arguments-differ
+    def __new__(cls, x=None, y=None, polar=False, unit='rad'):                 #pylint: disable=arguments-differ
 
         def read_array(X, Y):
             """Build Vector2 from another Vector2, [x, y], or x/y"""
             if isinstance(X, cls) and Y is None:
+                if polar:
+                    raise ValueError(
+                        'When copying a Vector2, polar=True is not supported'
+                    )
                 return cls(X.x, X.y)
             if (isinstance(X, (list, tuple, np.ndarray)) and len(X) == 2 and
                     Y is None):
-                return cls(X[0], X[1])
+                return cls(X[0], X[1], polar, unit)
             if X is None and Y is None:
-                return cls(0, 0)
+                return cls(0, 0, polar, unit)
             if np.isscalar(X) and np.isscalar(Y):
+                if polar:
+                    if unit not in ['deg', 'rad']:
+                        raise ValueError(
+                            'Only units of rad or deg are supported'
+                        )
+                    if unit == 'deg':
+                        Y = Y / 180 * np.pi
+                    X, Y = X * np.cos(Y), X * np.sin(Y)
                 xyz = np.r_[X, Y]
                 xyz = xyz.astype(float)
                 return xyz.view(cls)
