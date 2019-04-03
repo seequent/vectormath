@@ -61,8 +61,7 @@ class BaseVector(np.ndarray):
 
     @property
     def theta(self):
-        """
-        Angular coordinate / azimuthal angle of this vector in radians
+        """Angular coordinate / azimuthal angle of this vector in radians
 
         Based on polar coordinate space (or sperical coordinate space for `Vector3`)
         returns angle between this vector and the positive x-axis
@@ -78,8 +77,7 @@ class BaseVector(np.ndarray):
 
     @property
     def theta_deg(self):
-        """
-        Angular coordinate / azimuthal angle of this vector in degrees
+        """Angular coordinate / azimuthal angle of this vector in degrees
 
         Based on polar coordinate space (or sperical coordinate space for `Vector3`)
         returns angle between this vector and the positive x-axis
@@ -220,8 +218,7 @@ class Vector3(BaseVector):
 
     @property
     def phi(self):
-        """
-        Polar angle / inclination of this vector in radians
+        """Polar angle / inclination of this vector in radians
 
         Based on sperical coordinate space
         returns angle between this vector and the positive z-azis
@@ -237,8 +234,7 @@ class Vector3(BaseVector):
 
     @property
     def phi_deg(self):
-        """
-        Polar angle / inclination of this vector in degrees
+        """Polar angle / inclination of this vector in degrees
 
         Based on sperical coordinate space
         returns angle between this vector and the positive z-azis
@@ -264,7 +260,9 @@ class Vector2(BaseVector):
             """Build Vector2 from another Vector2, [x, y], or x/y"""
             if isinstance(X, cls) and Y is None:
                 if polar:
-                    raise ValueError('When copying a Vector2, polar=True is not supported')
+                    raise ValueError(
+                        'When copying a Vector2, polar=True is not supported'
+                    )
                 return cls(X.x, X.y)
             if (isinstance(X, (list, tuple, np.ndarray)) and len(X) == 2 and
                     Y is None):
@@ -274,7 +272,9 @@ class Vector2(BaseVector):
             if np.isscalar(X) and np.isscalar(Y):
                 if polar:
                     if unit not in ['deg', 'rad']:
-                        raise ValueError('Only units of rad or deg are supported')
+                        raise ValueError(
+                            'Only units of rad or deg are supported'
+                        )
                     if unit == 'deg':
                         Y = Y / 180 * np.pi
                     X, Y = X * np.cos(Y), X * np.sin(Y)
